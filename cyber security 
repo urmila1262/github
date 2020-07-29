@@ -1,0 +1,71 @@
+what are different types of malwares?
+Malware:“Malware” is short for “malicious software” - computer programs designed to infiltrate and damage computers without the users consent.
+Types of malwares:
+
+#12 Adware:
+This type of software is designed to gather information from the user in order to design personalized advertisements. Not in all cases they act maliciously,
+ they can be included in free software that is financed thanks to these ads. But in most cases they are downloaded from a Trojan from an infected site and 
+ are installed without a trace, they are usually called browser hijacker
+
+#11 Spyware:
+It is a malicious software that installs itself on the device and works as a spy. It collects information and sends it, without the user’s consent.
+ In addition to the damage to privacy, this type of malware also decreases system performance.
+
+#10 Trojan:
+This type of malware is usually camouflaged within another application. 
+Its main objective is to install itself and open a back door for other types of malicious software, preventing them from being detected.
+
+#9  Worms:
+They are malicious programs that have the ability to make copies of themselves, once installed use communication features, such as email, to reach as many devices as possible.
+
+#8  Phishing:
+It is a type of cybercriminal action that seeks to obtain access data or personal information of users in a fraudulent manner. To achieve this they usually use an email 
+or a web interface, which through social engineering, seeks to convince the user that it is a known service to voluntarily enter the data.
+
+#7  KeyLogger:
+This malware is able to read and store keystrokes without the user’s consent and without being detected.
+
+#6  Backdoor:
+This malicious software opens a backdoor in the system, through which, takes control of it.
+
+#5  Exploit:
+It is a malicious program that takes advantage of a vulnerability of a computer system, to access it and control a certain behavior without the user’s consent.
+
+#4  APT:
+Its acronym means: “Advanced Persistent Threat”. This type of malware leaks into the security of a system in order to control and monitor it, in order to extract data continuously from a specific computer.
+
+#3  DDos:
+It is a distributed cyberattack (uses several devices), against a specific web that causes the denial of service of the same.
+
+#2  Botnets:
+It consists of a network of devices infected with other types of malware and that can be controlled by the attacker remotely.
+
+#1 Ransomware
+This dangerous malware, very fashionable recently, is installed on the device, blocks it, encrypts files and then requests a rescue so that the user can regain control of their equipment and information.
+
+How can we protect access to our email address?
+
+Create robust passwords and hard-to-answer security questions. If you want advice on how to do it, read our post: 3 Cybersecurity tips to create safe passwords and remember them. Additionally to this, bare in mind that you shoukd renew your password periodically to maintain your strength.
+Link your mail to another alternative account, to facilitate its recovery in case of loss.
+Do not post your email address in forums, social networks, or others.
+It is a good policy to have between 3 and 4 email addresses, and define a role for each of them. Why? to subscribe to new services that are unknown to your security policy, it is convenient to use temporary account services.
+
+How to make responsible use of email?
+
+Try not to send mass emails. If it is not avoidable, place the addresses in the CCO section (hidden copy) and be sure to erase the addresses of the body of the message in case you are forwarding it.
+Install an anti-spam filter and do not respond to this type of email, as this gives clues to possible attackers or spammers.
+Avoid accessing public networks or from outside computers. In case you have to do it:
+Browse as incognito
+Delete the history
+Do not forget to close the email session
+Before opening an attachment or a link, verify:
+That it was sent from known sender
+That the files do not have a double extension (usually worms or Trojans)
+If you decide to open them, check them previously with an antivirus
+Remember: software companies do not send attachments by email and banks do not request access information by email.
+
+How to protect sensitive information?
+
+If you work with critical information, it is highly advisable to deactivate the HTML view of the email, since you can take advantage of options in JavaScript to infect the recipient’s computer.
+You can also install a whitelist application to prevent other users from opening dangerous attachments.
+Finally, a highly demanded option is to include a data encryption application to share sensitive information securely.  
