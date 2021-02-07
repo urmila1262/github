@@ -1,0 +1,33 @@
+What is the use of Adhoc commmands?
+
+For small,easy and quick tasks we use adhoc commands instead of writing play blooks.Ex: to restart,to power off all servers at a time,to get uptime of all servers,to getting curl
+versions, os versions etc we can use Adhoc commands.
+
+What is diff b/w Adhoc commands and playbooks?
+
+To perform multiple commands at a time EX: installing http web server need to configure a package,install and start the server in this case we use play books.
+But if we use adhoc commands in this case we need to run one commands for each task.
+
+Syntax:
+### command hostgroups module/arguements[options]
+### ansible webserver(groupname) reboot (or) ping
+### ansible all -a uptime  ---->it will give the uptime of all the hosts in the inventory file here 'a' is argument.
+### ansible all -a "uname -a"  --->it will give kernal info, here we are using option in quotes rather than module.
+### ansible-doc -l |more --->list of modules available in ansible
+### ansible-doc -l |more |wc -l  ---->igves count of modules
+### ansible-doc -l | grep -i user ---> for particular modules
+### ansible-doc user --->gives detailed info of module user----it will manage user accounts and attributes {options with '=' are mandatory}
+### ansible all -m ping
+### ansible all -m user -a "name=ram password=redhat" ----> to create the user
+### id ram --->to check the user present or not
+### ansible all -a(aim) "yum -y install httpd"  ---> to install httpd
+### rpm -q httpd --->to check httpd is installed or not
+### ansible all -a(aim) "yum -y remove httpd" ----> remove by using the same Adhoc command
+ By using modules
+### ansible all -m(module) yum -a(argument)"name=httpd state=present"
+### ansible-doc yum --> for help
+### ansible all -m(module) yum -a(argument)"name=httpd state=absent"
+
+
+
+
