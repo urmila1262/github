@@ -1,0 +1,24 @@
+## launch.sh --->it will launch the cluster
+## kubectl cluster-info   --->it will give kubernetes master and DNS URL and port no(Health check)
+## kubectl cluster-info dump  ---> to further debug and diagnose cluster problems
+## minikube version
+## minikube atart --wait=false
+## kubectl cluster-info  --->cluster info
+## kubectl get nodes -->to view nodes in the cluster.
+## docker -v --->docker version
+## kubectl run ----> it allows containers to be deployed onto the cluster
+## kubectl create deployment first-deployment --image=katacoda/docker-http-server  ----->to create the deployment
+## kubectl get pods  ----> to check status of deployment we use this command
+## kubectl expose deployment first-deployment --port=80 --type=NodePort   ---->once the container is running it can be exposd via diff networking options, depending on requirements.
+One possible solution is NodePort, that provides a dynamic port to a container.
+
+## export PORT=$(kubectl get svc first-deployment -o go-template={{range.spec.ports}}{{if.nodeport}}{{"\n"}}{{end}}{{end}}')
+## echo "Accessing host01:$PORT"
+Accessing host01:30340
+## curl host01:$PORT
+<h1>This request was processed by host: first-deployment-666c48b44-4kb2r</h1>  ----------->All this above commands finds the allocated port and executes a HTTP request.
+
+Enable the dashboard
+## minikube addons enable dashboard
+## Kubectl apply -f /opt/kubernetes-dashboard.yaml --->we will get msg like service/kubernetes-dashboard-katacoda created.
+
