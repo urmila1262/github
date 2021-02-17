@@ -7,3 +7,63 @@ What is diff b/w docker and kubernetes?
 
 Docker is a platform and tool for building, distributing, and running Docker containers. ... Kubernetes is a container orchestration system for Docker containers 
 that is more extensive than Docker Swarm and is meant to coordinate clusters of nodes at scale in production in an efficient manner.
+
+what is an image in Docker?
+
+A Docker image is a read-only template that contains a set of instructions for creating a container that can run on the Docker platform.It provides a convenient
+way to package up applications and preconfigured server environments, which you can use for your own private use or share publicly with other Docker users.
+Images --->Binaries ,dependencies and metadata.
+
+ # docker image ls ---> gives list of existing images in our docker.
+ # docker pull nginx ---> It will download the latest image of nginx.
+ # docker pull nginx:1.11 --->it will download the specific defined version of nginx. (here 1.11 is a tag).
+ # docker pull nginx:1.11-alpine ---> it will download alpine supported nginx which is very small container of unix os.
+ # docker history nginx:latest ---> it will give history of nginx image layers. (this command works for the images only exits in our docker)
+ Note: Every layer is having its own unique SHA and the files will be stored once in images they will be accessed.
+ # docker history mysql 
+ # docker history mysql:latest
+ # docker image inspect nginx ---> it will gives the metadata of the nginx image.(image ID,tags,exposed ports,env variables and how the image expects to be run etc)
+ 
+ Tags are labels point to the image ID.
+ # docker image tag sourceimage(:tag) targetimage(tag) --->syntax.
+ # docker image tags --help ---> it will give syntax to use tags.
+ # docker image ls --->we can see tags here only
+ # docker image tag nginx urmila/nginx ---->way to change the original tag and use our own.
+ # docker image ls ---> now you can see the new image with our own tag but image ID is same for both.
+ # docker image push urmila/docker ---> used to push our image to docker hub.
+ # docker --help ---> gives options to use.
+ # docker login ---> ask credentials to login to docker hub.
+ # cat .docker/config.json ---> config file contains authentication token(need to be careful when using shared accouts)
+ 
+ docker file
+ # docker image build -t customnginx .   ----> build the docker image based on docker file steps and it will stores all info in cache and uses it when we run the
+   build next time.
+ # docker container run -p 80:80 --rm nginx ---> to run the container in normal way.
+ # docker image build -t nginx-with-html ---->by running as a build it will be faster becoz stored in cache.
+ Note: Now we can create tag to this image and push into our own docker hub.
+ 
+ We can build our own dockerfile and run container on it.
+ By modifying existing docker file we can say expose on what ever port we want, do changes as our wish and run the container, then we can tag it and push into our
+ docker hub.
+ # docker push [options] name[:tag] ---> syntax.
+ # docker image ls ---> lists our image
+ # docker image rm imagetagname ---> it will removes our image from cache need to download again if you want.
+ 
+ Using Prune to Keep Your Docker System Clean (YouTube)
+You can use "prune" commands to clean up images, volumes, build cache, and containers. Examples include:
+
+- docker image prune --->to clean up just "dangling" images
+
+- docker system prune ----> will clean up everything
+
+- The big one is usually # docker image prune -a -->which will remove all images you're not using. Use # docker system df ---> to see space usage.
+
+Remember each one of those commands has options you can learn with --help.
+
+Here's a YouTube video I made about it: https://youtu.be/_4QzP7uwtvI
+
+Lastly, realize that if you're using Docker Toolbox, the Linux VM won't auto-shrink. You'll need to delete it and re-create (make sure anything in
+docker containers or volumes are backed up). You can recreate the toolbox default VM with # docker-machine rm default   and then # docker-machine create
+   
+ 
+ 
