@@ -1,0 +1,11 @@
+  My name is Urmila, I have 4 years of experience in DevOps and build release activities. Majorly I was involved in setting up CI/CD pipelines from scratch.
+We were using Github enterprise as version control system. I created repositories and assigned permissions to application teams. I integreated github with Jenkins 
+to fetch source code.We are using jenkins as continuous integration tool, I installed Jenkins and did master-slave configuration.Created various jenkins jobs based
+oncustomer requirement. I have written jenkins file to create pipeline jobs. I integrated jenkins with nexus artifactory. So, whenever pipeline job run it will push
+the artifact into nexus by using nexus artifact uploader plugin.
+
+  For continuous deployment and configuration management we have Ansible. I have written various playbooks and configured them to remove manual efforts
+  We have splunk for monitoring our apps and as well as infrastructure. We hosted few applications on AWS cloud where I have working experience on services like EC2,
+S3,IAM,VPC,Autoscaling and ELB.
+  We are using jira for project iteration and tracking purpose. We follow Agile with scrum. Usually our sprint goes for 16 days.
+  
