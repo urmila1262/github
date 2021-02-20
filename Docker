@@ -14,6 +14,12 @@ A Docker image is a read-only template that contains a set of instructions for c
 way to package up applications and preconfigured server environments, which you can use for your own private use or share publicly with other Docker users.
 Images --->Binaries ,dependencies and metadata.
 
+ # docker version ---->Gives the version of docker.
+ # docker info  ---->Gives the information more than docker version.
+## syntax: docker <command> <subcommand> (options).
+ # docker container run --publish 80:80 nginx --->downloads the nginx image from docker hub and runs.
+
+
  # docker image ls ---> gives list of existing images in our docker.
  # docker pull nginx ---> It will download the latest image of nginx.
  # docker pull nginx:1.11 --->it will download the specific defined version of nginx. (here 1.11 is a tag).
@@ -68,6 +74,7 @@ docker containers or volumes are backed up). You can recreate the toolbox defaul
 ---- Difference between run command and entry point?
 ---- Diff b/w copy and add?
 ---- Diff b/w Docker and virtualization?
+   
 ---- docker file for nginx and tomcat?
    
  
