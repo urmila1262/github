@@ -22,3 +22,4 @@ Enable the dashboard
 ## minikube addons enable dashboard
 ## Kubectl apply -f /opt/kubernetes-dashboard.yaml --->we will get msg like service/kubernetes-dashboard-katacoda created.
 
+bu
