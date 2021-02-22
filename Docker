@@ -14,6 +14,19 @@ A Docker image is a read-only template that contains a set of instructions for c
 way to package up applications and preconfigured server environments, which you can use for your own private use or share publicly with other Docker users.
 Images --->Binaries ,dependencies and metadata.
 
+---- Diff b/w Docker and virtualization?
+
+Virtual Machine	                                                               Docker Container
+
+Hardware-level process isolation	                                              OS level process isolation
+Each VM has a separate OS	                                                     Each container can share OS
+Boots in minutes	                                                              Boots in seconds
+VMs are of few GBs	                                                            Containers are lightweight (KBs/MBs)
+Ready-made VMs are difficult to find	                                          Pre-built docker containers are easily available
+VMs can move to new host easily	                                               Containers are destroyed and re-created rather than moving
+Creating VM takes a relatively longer time	                                    Containers can be created in seconds
+More resource usage	                                                           Less resource usage
+
 CONTAINER:
 
  # docker version ---->Gives the version of docker.
@@ -118,6 +131,7 @@ NETWORK:
 ---- Difference between run command and entry point?
 ---- Diff b/w copy and add?
 ---- Diff b/w Docker and virtualization?
+
    
 ---- docker file for nginx and tomcat?
    
