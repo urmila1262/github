@@ -1,6 +1,6 @@
-
+                           docker build              docker run
 Developer ----->dockerfile ----->build docker image ---->docker container(will have all applications and dependencies)
-                                                                                                                    pull image
+                                                     docker push                                                               pull image
                                                     ----> also stored in online cloud repository called "docker hub".--->docker image--->docker container
                             
 
@@ -9,6 +9,19 @@ What is Docker?
 Docker is a tool designed to make it easier to create, deploy, and run applications by using containers. 
 Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and deploy it as one package.
 
+Advantages of Docker?
+
+Build app only once : An application inside a container can run on any system that has docker installed.So there is no need to build and configure application 
+multiple times on different platforms.
+More sleep and less worry : With docker you test your application inside a container and ship it inside a container. This means the environment 
+in which you test is identical to the one on which the application will run in production.
+portability: Docker containers will run on any platform. It can run on any local system,Amazon EC2,Google cloud,Rackspace server,Virtual box etc 
+Version control: Like GIT, Docker has inbuilt version control system. Docker containers work just like GIT repositories,allowing you to commit changes to 
+your docker images and version control them.
+Isolation: With docker every application works in isolation in its own container and doesnot interferes with other applications running on the same system.
+so we can run multiple containers and to remove we can simply delete containers.
+Productivity: Increases productivity and efficiency without worrying about platforms.
+
 What is diff b/w docker and kubernetes?
 
 Docker is a platform and tool for building, distributing, and running Docker containers. ... Kubernetes is a container orchestration system for Docker containers 
@@ -16,8 +29,7 @@ that is more extensive than Docker Swarm and is meant to coordinate clusters of 
 
 what is an image in Docker?
 
-A Docker image is a read-only template that contains a set of instructions for creating a container that can run on the Docker platform.It provides a convenient
-way to package up applications and preconfigured server environments, which you can use for your own private use or share publicly with other Docker users.
+Docker images are templates used to create containers that can run on the Docker platform.Container is a running instance of image.
 Images --->Binaries ,dependencies and metadata.
 
 18. What is Hypervisor?
@@ -64,8 +76,15 @@ Secondly, you can extract a tar file from the source directly into the destinati
 
 CONTAINER:
 
- # docker version ---->Gives the version of docker.
- # docker info  ---->Gives the information more than docker version.
+ # docker version ---->Gives the information of client,server(engine) of docker.
+ # docker -v (or) # docker --version ---->gives version info.
+ # sudo service docker start ---->to start docker deamon
+ # sudo service docker stop ---->stops docker
+ # sudo yum remove docker ---->uninstalls docker 
+ # docker info  ---->Gives the detailed information more than docker version.
+ # docker login ---> to login to docker hub from terminal.
+ # docker system df ----> to see disk usage of containers,images,volumes etc.
+ # sudo usermod -a -G docker <username> ----> to add a user to Docker so that we can execute all commands on our user without sudo.
 ## syntax: docker <command> <subcommand> (options).
  # docker container run --publish 80:80 nginx --->downloads the nginx image from docker hub and runs.
  # docker create (image). ----->create a container(without starting it).
@@ -101,6 +120,8 @@ CONTAINER:
 IMAGES:
 
  # docker image ls ---> gives list of existing images in our docker.
+ # docker images -q --->gives only image ID
+ # docker images -f "dangling=false" ---->it will filter all dangling images.(untagged)
  # docker pull nginx ---> It will download the latest image of nginx.
  # docker pull nginx:1.11 --->it will download the specific defined version of nginx. (here 1.11 is a tag).
  # docker pull nginx:1.11-alpine ---> it will download alpine supported nginx which is very small container of unix os.
@@ -123,6 +144,26 @@ IMAGES:
  
 DOCKER FILE:
 
+Step:1 Create a file named Dockerfile. # vim Dockerfile
+Step:2 Add instructions in Dockerfile
+Step:3 Build Dockerfile to create image
+Step:4 Run image to create container.
+
+# getting base image docker --->comment
+FROM ubuntu --->image name
+
+RUN apt-get update ---->running ubuntu
+
+CMD ["echo","Hello World...! from my first docker image"] ---->running cmd inside ubuntu.
+
+  # docker run efc34aa ----> it will runs our container.
+  
+References:
+https://github.com/wsargent/docker-ch...​
+https://docs.docker.com/engine/reference/builder/
+
+
+
  # docker image build -t customnginx .   ----> build the docker image based on docker file steps and it will stores all info in cache and uses it when we run the
    build next time.
  # docker container run -p 80:80 --rm nginx ---> to run the container in normal way.
@@ -142,9 +183,9 @@ DOCKER FILE:
  Using Prune to Keep Your Docker System Clean (YouTube)
 You can use "prune" commands to clean up images, volumes, build cache, and containers. Examples include:
 
-- docker image prune --->to clean up just "dangling" images
+- docker image prune --->to clean up just "dangling"(not associated with running container) images
 
-- docker system prune ----> will clean up everything
+- docker system prune ----> will clean up everything ( -f force
 
 - The big one is usually # docker image prune -a -->which will remove all images you're not using. Use # docker system df ---> to see space usage.
 
@@ -163,15 +204,7 @@ NETWORK:
 # docker network connect [NETWORK] [CONTAINER] ---->Connects a container to a network
 # docker network disconnect [NETWORK] [CONTAINER]. ---->Disconnect a container from a network
 
----- Difference between run command and entry point?
----- Diff b/w copy and add?
----- Diff b/w Docker and virtualization?
-
-   
+---- Difference between run command and entry point?   
 ---- docker file for nginx and tomcat?
-   
- 
- 
-what is docker deamon
 what is conterziation
-diff between conterization Vs virtulization
+
