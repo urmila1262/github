@@ -1,3 +1,27 @@
+What is Kubernetes?
+
+Kubernetes is a container management or orchestration tool.It is also known as K8s, its a open source and written in GO language.
+container orchestration tool or engine automates deploying,scaling and managing containerized application on a group of servers.
+ex: Kubernetes,docker swarm,Apache Mesos Marathon.
+
+Kubernetes --->take care of deploying,scaling,scheduling,load balancing,batch execution,rollbacks and monitoring.
+
+1) Automatic bin packaging: Kubernetes automatically packages your application and schedules the container based on the requirements and resources available.
+Pods and Nodes: containers are placed in functional unit called pod and pods are housed inside Nodes
+2)Service discovery and load balancing:
+How kurbernetes organizes containers
+Kubernetes doesn't run containers directly instead it wraps one or more containers into a high-level structure called pod.Each pod contain a storage volume and 
+every pod has a unique network IP.
+All pods having same set of functions are abstracted into sets called services and this services has given a DNS name with this system Kubernetes has control over 
+network and communication between pods and can load balance accross them.
+3) Storage Orchestration:
+Containers running in the pods need some storage but a single storage volume present in each pod for all containers.
+Kerburnetes allows to mount the storage system of your choice like local,cloud(AWS),NFS(Network file system).
+4) Self healing:
+If a container fails Kubernetes restarts the container,if node dies - replaces and reschedule containers on other nodes,if container doesn't respond to user 
+defined health check - kill container. The process that takes care of all this is replication controller.
+
+
 ## launch.sh --->it will launch the cluster
 ## kubectl cluster-info   --->it will give kubernetes master and DNS URL and port no(Health check)
 ## kubectl cluster-info dump  ---> to further debug and diagnose cluster problems
