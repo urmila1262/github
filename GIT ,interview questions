@@ -1,0 +1,64 @@
+what is git merge Vs rebase?
+Git merge and rebase are used to merge the changes from feature branch to master branch .If merge is used then the changes are committed on master as a part of
+new commit ID and commit history of feature branch will be last. But if we use rebase the commit history will be available on feature branch.
+
+
+#revert vs reset vs checkout
+
+git revert is used to undo previous commits, instead of editing earlier commit, revert introduces a new commit that reverses an earlier one.
+git reset is used to remove changes from staging area if we use soft the changes will be removed but will be available in working dir for further use, where as 
+in git reset hard changes will be deleted from staging area and this will not be available in working dir as well.
+git checkout is used to delete the changes of modified and tracked files from working directory.
+
+#fetch vs pull
+
+Git fetch will download the latest changes from remote repository to local repository but it will not merge changes into working repository.
+Git pull is combination of "git fetch+merge". So it will download the latest changes from remote repository and merges with working repository.
+
+#bare repo
+
+A bare repository is nothing but the .git folder itself i.e. the contents of a bare repository is same as the contents of .git folder inside your local working repository.
+
+Use bare repository on a remote server to allow multiple contributors to push their work.
+Non-bare - The one which has working tree makes sense on the local machine of each contributor of your project.
+
+#cherry picking 
+
+Cherry picking is used to move the accedental commits from one branch to another branch.
+Suppose I want to commit some changes on feature branch by mistake I did those changes on master so, to move that changes from master branch to feature branch
+we use git cherrypicking. 
+
+git checkout 
+
+Execute the following:
+
+git cherry-pick <commit-hash>
+
+# merge with tag 
+
+git checkout destination_branch
+git merge tag_name
+
+# pushing local branch to remote 
+
+If your Local branch and remote branch is the same name then you can just do it:
+
+git push origin branchName
+When your local and remote branch name is different then you can just do it:
+
+git push origin localBranchName:remoteBranchName
+
+# adding permissions to specifc github branch 
+
+https://confluence.atlassian.com/bitbucketserver/using-branch-permissions-776639807.html
+
+#git bisect
+
+$ git bisect .. bascically a Git tool for debugging. 'Git Bisect' debugs by going through the previous commits since your last (known) working commit. 
+It uses binary search to go through all those commits, to get to the one which introduced the regression/bug.
+
+$ git bisect start # Starting bisect
+
+$ git bisect bad # stating that the current commit (v1.5) has the regression/ setting 'bad' point
+
+$ git bisect good v1.0 # mentioning it the last good working commit (without regression)
