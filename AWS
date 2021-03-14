@@ -1,0 +1,17 @@
+What is cloud computing?
+Cloud computing is the on-demand delivery of IT resources over the Internet with pay-as-you-go pricing. Instead of buying, owning, and maintaining physical 
+data centers and servers, you can access technology services, such as computing power, storage, and databases, on an as-needed basis from a cloud provider 
+like Amazon Web Services (AWS).
+
+Difference between AWS and Azure?
+KEY DIFFERENCE
+Both Azure and AWS supports hybrid cloud but Azure supports hybrid cloud better.
+Azure offers express routes while AWS offers direct connection.
+Azure provides security by offering permissions on the whole account whereas AWS security is provided using defined roles with permission control feature.
+Azure machines are grouped into cloud service and respond to the same domain name with various ports whereas the AWS machine can be accessed separately.
+Azure has a virtual network cloud whereas AWS has Virtual Private Cloud.
+Azure has 140 availability zone whereas AWS has 61 availability zone.
+
+IAAS
+
+Networking --> storage --> servers --> Virtualization (Service provider management) O/S --> Middleware -->runtime --> data -->applications (Customer management).
