@@ -13,5 +13,17 @@ Azure has a virtual network cloud whereas AWS has Virtual Private Cloud.
 Azure has 140 availability zone whereas AWS has 61 availability zone.
 
 IAAS
-
 Networking --> storage --> servers --> Virtualization (Service provider management) O/S --> Middleware -->runtime --> data -->applications (Customer management).
+
+PAAS
+Networking --> storage --> servers --> Virtualization -->O/S --> Middleware -->runtime (Service provider management) data -->applications (Customer management).
+
+SAAS
+Networking --> storage --> servers --> Virtualization -->O/S --> Middleware -->runtime -->data -->applications. (Service provider management).
+
+Everything will be taken care by service provider and made all this softwares available on internet for us to user for different business purposes by cloud.
+ex: emailservices,online games,shoping portals,Hadoop tools etc --->SAAS
+
+What is AWS region and availability zones?
+AWS has the concept of a Region, which is a physical location around the world where we cluster data centers. We call each group of logical data centers 
+as Availability Zone. Each AWS Region consists of multiple, isolated, and physically separate AZ's within a geographic area.
