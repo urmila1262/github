@@ -27,3 +27,5 @@ ex: emailservices,online games,shoping portals,Hadoop tools etc --->SAAS
 What is AWS region and availability zones?
 AWS has the concept of a Region, which is a physical location around the world where we cluster data centers. We call each group of logical data centers 
 as Availability Zone. Each AWS Region consists of multiple, isolated, and physically separate AZ's within a geographic area.
+
+EC2:
