@@ -1,0 +1,108 @@
+Linux or unix is command line os and is case sensitive.
+
+pwd: Present working dir or current working dir.
+Gives information about the current dir where you are.
+
+ls: list
+this command gives list of files and dirs in the current working dir.
+ls -l: long list of all files and dirs.
+ls -al: long list of all files and dirs along with hidden files.
+ls -ltr:long list of all files and dirs in reverse of there modified time.
+ls -R: list of all files and dirs in a recurssive order.
+
+cd: command is used to move from one dir to another dir
+cd home,cd,cd ~  --->used to go to home dir.
+cd -  --->to go to previous working dir.
+cd ..  ---> to go to parent dir.
+cd /  ---> to go to root dir.
+cd /path/  ---> to go to particular path.
+
+mkdir: command is used to create dirs.
+mkdir -p : to create multiple dirs at a time.
+mkdir dirname, mkdir -p dir1 dir2 ...etc, mkdir -p dir1/dir2/dir3 ...etc.
+
+rmdir: remove empty dirs --->rmdir dirname
+rm : remove files  ---> rm filename
+rm -rf : it will remove files and dirs recurrsively  ---> rm -rf dirname.
+
+How to create files
+
+cat :cat command is used to create files, append data into files and display the file content.
+ cat > filename
+ Add content
+ Press 'ctrl + d' or 'ctrl + c' to return to command prompt. ----> to create a file
+ cat >> filename  ---> to append data into the file.
+ cat f1 f2 >> f3  ---> combines two files data into f3.
+ cat f1 f2 ... ----> to display content of one or more files.
+ 
+touch: Touch command is used to create multiple 0 byte files at a time, also it can update creating and modification time of a file.
+touch f1 f2 f3 ... etc.
+
+vi:
+vi filename
+creates file and prompts to insert content into the file.First it will be in command mode, to insert content press "i" and to quit from insert mode press escape,
+to save the file and quit from vi press :wq or :x.
+VI Editing commands:
+i - Insert at cursor (goes into insert mode)
+a - Write after cursor (goes into insert mode)
+A - Write at the end of line (goes into insert mode)
+ESC - Terminate insert mode
+u - Undo last change
+U - Undo all changes to the entire line
+o - Open a new line (goes into insert mode)
+dd - Delete line
+3dd - Delete 3 lines.
+D - Delete contents of line after the cursor
+C - Delete contents of a line after the cursor and insert new text. Press ESC key to end insertion.
+dw - Delete word
+4dw - Delete 4 words
+cw - Change word
+x - Delete character at the cursor
+r - Replace character
+R - Overwrite characters from cursor onward
+s - Substitute one character under cursor continue to insert
+S - Substitute entire line and begin to insert at the beginning of the line
+~ - Change case of individual character
+df:
+vi:
+cron:
+ping:
+dd:
+nslookup:
+traceroute:
+chmod:
+tty:
+grep:
+find:
+netstat:
+gzip:
+kill:
+wget:
+chown:
+Netcat(nc):
+mv:
+fdisk:
+mount:
+ifconfig:
+rm:
+mkdir:
+nohup:
+tail:
+whoami:
+xargs:
+chroot:
+du:
+fsck:
+dpkg:
+rmdir:
+dmesg:
+cp:
+expr:
+env:
+init:
+passwd:
+sleep:
+echo:
+tee:
+gunzip:
+su:
