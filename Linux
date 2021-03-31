@@ -63,7 +63,60 @@ R - Overwrite characters from cursor onward
 s - Substitute one character under cursor continue to insert
 S - Substitute entire line and begin to insert at the beginning of the line
 ~ - Change case of individual character
+
+mv: Move command is used to move files and dirs from one location to other.It is nothing but renaming of files. 
+mv f1 f2  --->if file f2 doesn't exist it will create and move, and f1 won't be available.
+-i ---> interactive
+-f --->forcefully
+mv /dir1 /path/dir2--->It will move total dir to some other location.
+
+cp : cp command is used to copy files and dirs.
+cp src dest
+cp f1 f2
+cp fx fy fz dir1
+Note: copy f1 and if f2 not there then it will create and copy.
+      It will copy multiple files into a dir, if already the files exists in dir with same name it will overwrites that files.
+cp -R dir1 dir2  --->(-r or -R)
+cp -p f1 f2  (preserve permissions of file)
+
+To view the content of files:
+cat
+
+more:
+more filename
+more command is used to display content page by page, user can't navigate back.(option n or N)
+To quit from more press 'q'.
+
+less:
+less filename
+less command is used to display content line by line and allows user to navigate both forward and backword.(option n or N)
+press 'q' to quit from less.
+
+head:
+head filename
+By default head will display first '10' lines of a file.
+For more lines i.e, 50 etc
+head -50 filename
+
+tail:
+tail filename
+By default tail will display last '10' lines of a file.
+For more line i.e, 50 etc
+tail -50 filename
+
+Suppose file has 100 lines, want 51 to 60 line  or 51 to 70 lines.
+head -60 filename | tail   --->51 to 60 lines
+head -70 filename | tail -20. ---> 51 to 70 lines
+* tail -f filename  ---> dynamically displays the appending data of the file (gives run time logs).
+
 df:
+disc free
+df -h  ---> how much disk is free in human readable form( -h).
+
+du:
+disc usage
+du -h. ---> how much disk is used in human readable form( -h).
+
 vi:
 cron:
 ping:
