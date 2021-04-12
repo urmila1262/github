@@ -30,6 +30,33 @@ as Availability Zone. Each AWS Region consists of multiple, isolated, and physic
 We can select region but not AZ when creating instances.But after creation we can change default region and AZ as well.
 
 EC2:
+1.Choose AMI :here choose what type of os we need
+2.Choose instance type: what type of instance free tier
+3.Configure instance: security (N/W,vpc etc)
+4.Add storage: we can add storage here for ubuntu:8GB, RHEL:10GB, windows:30GB by default for free tier.(EBS:Elastic Block Storage added storage)
+   device :/dev/sda1 -- primary volume -means on which our OS is running.
+   general purpose ssd -- in this IOPS is constant,provisnal IOPS(i/p and o/p per sec)--- in this IOPS can be changed as per your requirement.
+5.Add Tags: give name for the instance.
+6.Configure security groups: SSH protocal will go by default---custom(particular location),anywhere (login from any location),my IP(only from my network)
+
+Review and Launch. 
+choose key pair -- acknowledge -- Launch --- click instance ID go to instance details.
+
+Login through Putty(When we are on windows to connect with remote linux server we use putty):first change .pem file to .ppk file by giving key pair
+in puttygen and saving as .ppk.
+Take public IP of the instance go to putty give IP there then connection-SSH-Auth-browser for key pair name(.ppk)-open
+login as:ubuntu (user name)
+it will authenticate key and will connect with remote server.
+now we can go to super user if needed.We can install the apps we need now it will work as our physical machine.
+
+
+
+
+Action:
+running, stop -- will stop temporarily, terminate--- stops permanently and remove from dashboard.
+when we stop instance after restarting the public IP of that instance will change, but if we want constant public IP go for elastic IP.
+
+EC2:
 1.Choose AMI. ---what type  of os we want.
 2.Choose instance type -- freetier and storage info.
 3.Configure instance -- security ,no: of instances etc
