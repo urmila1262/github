@@ -27,30 +27,27 @@ ex: emailservices,online games,shoping portals,Hadoop tools etc --->SAAS
 What is AWS region and availability zones?
 AWS has the concept of a Region, which is a physical location around the world where we cluster data centers. We call each group of logical data centers 
 as Availability Zone. Each AWS Region consists of multiple, isolated, and physically separate AZ's within a geographic area.
+We can select region but not AZ when creating instances.But after creation we can change default region and AZ as well.
 
 EC2:
-1.Choose AMI :here choose what type of os we need
-2.Choose instance type: what type of instance free tier
-3.Configure instance: security (N/W,vpc etc)
-4.Add storage: we can add storage here for ubuntu:8GB, RHEL:10GB, windows:30GB by default for free tier.(EBS:Elastic Block Storage added storage)
-   device :/dev/sda1 -- primary volume -means on which our OS is running.
-   general purpose ssd -- in this IOPS is constant,provisnal IOPS(i/p and o/p per sec)--- in this IOPS can be changed as per your requirement.
-5.Add Tags: give name for the instance.
-6.Configure security groups: SSH protocal will go by default---custom(particular location),anywhere (login from any location),my IP(only from my network)
+1.Choose AMI. ---what type  of os we want.
+2.Choose instance type -- freetier and storage info.
+3.Configure instance -- security ,no: of instances etc
+4.Add storage -- EBS to add storage.General purpose SSD(constant) provisional IOPS SSD(dynamic)
+5.Add Tags -- to give name to our instance.
+6.Configure security group -- SSH remote connection, we can restrict connectivity by choosing My IP -only from my n/w,custom -commonly using n/w,anywhere-diff PCs.
+Review and lunch
+Lunch -- Download key pair.
+connect with putty: Putty configuration --With public IP then go to connection-SSH-Auth(authentication)-keypair(.ppk)-open but putty accepts only 
+putty private keys(.pem to .ppk) go to putty gen load-select .pem file-save as private key-yes-save(.ppk) with name
 
-Review and Launch. 
-choose key pair -- acknowledge -- Launch --- click instance ID go to instance details.
+Login:
+username RHEL : ec2-user, centos : centos, ubuntu: ec2-user, windows: administrator etc  only this default users are needed to login then we can switch to super user.
 
-Login through Putty(When we are on windows to connect with remote linux server we use putty):first change .pem file to .ppk file by giving key pair
-in puttygen and saving as .ppk.
-Take public IP of the instance go to putty give IP there then connection-SSH-Auth-browser for key pair name(.ppk)-open
-login as:ubuntu (user name)
-it will authenticate key and will connect with remote server.
-now we can go to super user if needed.We can install the apps we need now it will work as our physical machine.
+Login directly from linux VM then we can use .pem file to conncet
+#ssh-i keypair(.pem) ec2-user@publicIP -- this pem file should have read only permissions to the owner(400) then only we can connect.
 
+Actions:
+Instance state -- stop, terminate, Reboot, start are there. Stop just stops the running instance but terminate removes the instance from the dashboard.
 
 
-
-Action:
-running, stop -- will stop temporarily, terminate--- stops permanently and remove from dashboard.
-when we stop instance after restarting the public IP of that instance will change, but if we want constant public IP go for elastic IP.
