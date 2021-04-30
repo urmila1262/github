@@ -78,3 +78,23 @@ Actions:
 Instance state -- stop, terminate, Reboot, start are there. Stop just stops the running instance but terminate removes the instance from the dashboard.
 
 
+Elastic IP address:in n/w and security select elastic ips - allocate new ip address - allocate (new IP address is created) - close
+click on new ip - actions - assocate - select instance - save ---> now for that particular instance IP is associated.
+Now we can check in dashboard of instances by selecting instance public ip = elastic ip even after instance is restarted.
+we can also deassociate the elastic ip for that particular instance by selecting deassociate option in actions and also we can select the particuar range for 
+our elastic IP. Elastic ip are chargable when they are not associated to any instance.
+
+To connect with remote windows machine cilck on RDP - credentials (click on connect take username,for PWD click on password and choose key pair then 
+select .pem file of instance and decript we will see our password and login.
+
+Password less auth
+-- ssh-keygen  ---->generate public and private keys
+-- ssh-copy-id -i ---> copy the public key into the instance
+
+
+
+
+
+so that it can be
+
+
