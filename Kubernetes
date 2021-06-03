@@ -58,4 +58,53 @@ What features does orchestration tool offer?
 
 Terms in K8s:
 Node:Node is a physical or virtual machine.
-Pod: Smallest unit of k8s and abstraction over a container creates running environments over containers or images
+
+Pod:Smallest unit of k8s and abstraction over a container creates running environments over containers or images.Each pod gets its own IP Address and it is internal
+    to communicate with other pods. Pods will die easily when containers,application or node is crushed and new pod will be created with new IP address.
+    
+Service:Service is having static IP Address and each pod has service, even if pod dies the service and its IP remains same.
+
+Ingress:In Kubernetes, an Ingress is an object that allows access to your Kubernetes services from outside the Kubernetes cluster. You configure access by creating 
+    a collection of rules that define which inbound connections reach which services. This lets you consolidate your routing rules into a single resource.(routing
+    Traffic to pods).
+    
+ConfigMap: External configuration for your app like DB etc and it is connected to the pod so that when ever pod requires DB it will get from configmap. If there 
+   is any change in name or URL of DB then simply change in configmap helps app to access new DB.
+   
+Secret:Secrets came into picture becoz we can't store pwd of DB in configmap, so in secrets we put our DB credentials and which is encoded in base64.Just like
+  configmap we can also connect secret to the pod so that pod can access data in both by using environmental varables or as a properties file.
+  
+Volumes:If DB pod or service get restared our data will gone so Volumes came into picture.Volume is physical storage on local machine or remote outside of k8's 
+  cluster(may be cloud or your own storage).k8's doesn't maintain any data persistance.
+  
+Replica:Suppose if the pod crushes or restarts in production it will effect our operations so,we need to maintain replica of pods with same service and it also 
+  helps in load balancing in operations.For this replica we can use blueprints of my-app pods this is deployments.
+  
+Deployment:We can deploy the pods for replica used for loadbalancing so we can scale up and down the replicas.
+
+Statefulset:In case of DB pods it will replicate Storage space but not data in it and also we can access to read or retrive data so we use Statefulset for DB and 
+  other stateful apps.(A stateful app is a program that saves client data from the activities of one session for use in the next session.)
+  
+  
+  Kubernetes Architecture:
+  
+  One of the main components of Kubernetes is Node,each node has multiple pods running on it.
+  Three processes that must be installed on every Node that should schedule and manage pods.Nodes are cluster servers that actually do work.
+  
+  First process that need to run on each node is
+  
+  1)Container runtime: (Docker or any other containers)You need to install a container runtime into each node in the cluster so that Pods can run there. 
+    This page outlines what is involved and describes related tasks for setting up nodes.
+    
+  2)Kubelet: The kubelet is the primary "node agent" that runs on each node and it interacts with both container and node.Kubelet is responsible to run the 
+    pod with a container inside by taking configuration and assigning resources from container to the pod like cpu,storage resouces.
+    
+ 3)Kube proxy:It will forwards the requests(communication between node)
+    kube-proxy is a network proxy that runs on each node in your cluster, implementing part of the Kubernetes Service concept. 
+    kube-proxy maintains network rules on nodes. These network rules allow network communication to your Pods from network sessions inside or outside 
+    of your cluster.
+    
+ 
+  
+  
+
