@@ -104,6 +104,38 @@ Statefulset:In case of DB pods it will replicate Storage space but not data in i
     kube-proxy maintains network rules on nodes. These network rules allow network communication to your Pods from network sessions inside or outside 
     of your cluster.
     
+ How do you interact with this cluster?
+ How to:
+    Schedule pod?
+    Monitor?
+    Reschedule/Restart pod?
+    Join a new node?
+  All above processes are controlled by Master processes which will take care of all the nodes.
+  
+  Four processes run on every master node that controls cluster state and worker nodes as well
+  
+  1)API server: To deploy a new application in a kubernetes cluster, interact with API server with some client.API server is like cluster gateway which gets 
+  initial requestes for any updates into the cluster or any queries from the cluster and also it acts as a gate keeper authentication to make sure that an
+  authorized request came to the cluster. When you want to Schedule new pods, deploy new apps, create new services you need to interact with API server on 
+  the master node then API server validate your request if everything is fine it will forward your request to the other processes inorder to schedule pod
+  or other components that you requested. It is good for security purpose becoz it has one entry point to the cluster.
+  
+  2)Scheduler: if you send request to create new pod the request will send through API server to Scheduler, Scheduler knows where to create pod(on which worker
+  node) and how much CPU,memory required.Scheduler just decides on which node new pod should be scheduled, sends request to kubelet, it will do actual 
+  configuration of CPU,memory etc and executes the process.
+  
+  3)Controller manager: Detects when pod dies or cluster state changes and send request to the scheduler again same process repeats it will check which node 
+  is having more free space, then it will restart the pods or schedule to create new pods. 
+  
+  4)etcd: It is a key value store of cluster simply called as cluster brain,what ever the changes(suppose pod dies,new pod scheduled etc) occur in the cluster
+  that will be stored in the etcd, but application data is not stored in the etcd. It will store only data related to cluster master node.
+ 
+  
+  
+  
+  
+  
+    
  
   
   
