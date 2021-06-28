@@ -117,13 +117,140 @@ du:
 disc usage
 du -h. ---> how much disk is used in human readable form( -h).
 
-vi:
-cron:
-ping:
-dd:
+cron: Chronograph tablation
+Crontab is used to schedule the jobs.
+[Minute] [hour] [Day_of_the_Month] [Month_of_the_Year] [Day_of_the_Week] [command]
+
+***** /path/to/script.sh (for every min,every hr,every date of month, every month,on every day of week the script need to run)
+
+Astrics (*): Use for matching
+Define range: Allows you to define a range with the help of hyphen like 1-10 or 30-40 or jan-mar, mon-wed.
+Define multiple ranges: Allows you to define various ranges with command separated like apr-jun,oct-dec.
+
+How to Add/Modify Crontab
+User can edit their crontab jobs with the help of following crontab command:
+
+$ crontab -u -e 
+The above command will open the personal crontab configuration of your computer system, which can be edited by using your default text editor.
+There is no need to restart your crontab as it will pick up your changes automatically when you use following command.
+
+To list all cron jobs
+$ crontab -l
+
+To remove your crontab tasks, use the following command.
+$ crontab -r
+
+To add or update job in crontab, use below given command.
+crontab -e
+
+Command to edit other user's crontab
+crontab -u username -e
+
+How to List Crontab
+
+Command to view crontab entries of current user
+crontab -l
+
+Command to view crontab entries of a specific user:
+crontab -u username -l
+
+Here, are some important examples of Crontab
+Description	Command
+Cron command to do the various scheduling jobs. Below given command execute at 7 AM and 5 PM daily.----> 0 7,17 * * * /scripts/script.sh
+Command to execute a cron after every 5 minutes.	---> */5* * * * *  /scripts/script.sh
+Cron scheduler command helps you to execute the task on every Monday at 5 AM. This command is helpful for doing weekly tasks like system clean-up.	
+---> 0 5 * * mon  /scripts/script.sh
+Command run your script on 3 minutes interval.	----> */3 * * * * /scripts/monitor.sh
+Command to schedule a cron to which executes for a specific month. This command to run tasks run in Feb, June and September months. Sometimes we need 
+to schedule a task to execute a select monthly task.	----> * * * feb,jun,sep *  /script/script.sh
+Command to execute on selected days. This example will run each Monday and Wednesday at 5 PM.	---->0 17 * * mon,wed  /script/script.sh
+This command allows cron to execute on first Saturday of every month.	----> 0 2 * * sat  [ $(date +%d) -le 06 ] && /script/script.sh
+Command to run a script for 6 hours interval so it can be configured like below.	----> 0 */6 * * * /scripts/script.sh
+This command schedule a task to execute twice on Monday and Tuesday. Use the following settings to do it.	---> 0 4,17 * * mon,tue /scripts/script.sh
+Command schedule a cron to execute after every 15 Seconds.	--->* * * * * /scripts/script.sh , * * * * *  sleep 15; /scripts/script.sh
+Command to schedule tasks on a yearly basis. --->@yearly timestamp is= to "0 0 5 1 *". This executes the task in the fifth minute of every year. 
+You can use it to send for new year greetings.	--->@yearly /scripts/script.sh 
+Command tasks to execute on a monthly basis. ---> @monthly timestamp is similar to "0 0 1 * *". 
+This command expression allows the execution of a task in the first minute of the month.	---> @monthly /scripts/script.sh
+Command to execute multiple tasks using a single cron.	----> * * * * * /scripts/script.sh; /scripts/scrit2.sh
+Command to schedule tasks to execute on a weekly basis.---> @weekly timestamp is similar to "0 0 4 * sun". 
+This is used to perform the weekly tasks like the system cleanup etc.	----> @weekly /bin/script.sh
+Task will be scheduled to execute on a daily basis.---> @daily timestamp is similar to "0 2 * * *". 
+It executes the task in the second minute of every day.	----> @daily /scripts/script.sh
+Allows tasks to execute on an hourly.---> @hourly timestamp is similar to "0 * * * *". 
+This command executes a task in the first minute of every hour.	----> @hourly /scripts/script.sh
+Allows tasks to execute on system reboot.---> @reboot expression is useful for those tasks that the system wants to run on your system startup.
+This is helpful to begin tasks background automatically.
+
+ping:PING (Packet Internet Groper) command is used to check the network connectivity between host and server/host.
+Syntax:ping [option] <em>hostname</em> or <em>IP</em> <em>address</em>
+Ex:
+$ ping google.com ---> to check remote host is up or not (ctrl+c to stop ping)
+
+ping “localhost” to Check Local Network
+If you encounter issues reaching a website or a remote machine, you can ping localhost to confirm you have a network connection. Use one of the three ways
+to check the local network interface:
+
+<strong>ping 0</strong> – This is the quickest way to ping localhost. Once you type this command, the terminal resolves the IP address and provides a response.
+<strong>ping localhost</strong> – You can use the name to ping localhost. The name refers to your computer, and when we use this command, we say: “ping this computer.”
+<strong>ping 127.0.0.1</strong> – Some people prefer using the IP address to ping localhost.
+
+dd:dd stands for Data Description.
+dd is a command-line utility for Unix and Unix-like operating systems whose primary purpose is to convert and copy files.
+
 nslookup:
+Nslookup (stands for “Name Server Lookup”) is a useful command for getting information from DNS server. It is a network administration tool for querying
+the Domain Name System (DNS) to obtain domain name or IP address mapping or any other specific DNS record. It is also used to troubleshoot DNS related problems.
+
+Syntax:
+nslookup [option]
+$ nslookup IPaddress
+$ nslookup DomainName
+
 traceroute:
-chmod:
+traceroute command in Linux prints the route that a packet takes to reach the host. This command is useful when you want to know about the route and about 
+all the hops that a packet takes.
+
+Syntax:
+traceroute [options]  host_Address [pathlength]
+
+chmod:Change mode
+In Unix-like operating systems, the chmod command sets the permissions of files or directories.
+
+In general, chmod commands take the form:
+Syntax:chmod options permissions file name
+
+If no options are specified, chmod modifies the permissions of the file specified by file name to the permissions specified by permissions.
+permissions defines the permissions for the owner of the file (the "user"), members of the group who owns the file (the "group"), and anyone else ("others"). 
+There are two ways to represent these permissions: with symbols (alphanumeric characters), or with octal numbers (the digits 0 through 7).
+
+Let's say you are the owner of a file named myfile, and you want to set its permissions so that:
+the user can read, write, and execute it;
+members of your group can read and execute it; and
+others may only read it.
+
+This command will do the trick:
+$ chmod u=rwx,g=rx,o=r myfile --->symbolic method
+This example uses symbolic permissions notation. The letters u, g, and o stand for "user", "group", and "other". The equals sign ("=") means "set the permissions
+exactly like this," and the letters "r", "w", and "x" stand for "read", "write", and "execute", respectively. The commas separate the different classes of 
+permissions, and there are no spaces between them.
+
+Here is the equivalent command using octal permissions notation:
+$ chmod 754 myfile ----> Absolute method
+Here the digits 7, 5, and 4 each individually represent the permissions for the user, group, and others, in that order. Each digit is a combination of the 
+numbers 4, 2, 1, and 0:
+
+4 stands for "read",
+2 stands for "write",
+1 stands for "execute", and
+0 stands for "no permission."
+So 7 is the combination of permissions 4+2+1 (read, write, and execute), 5 is 4+0+1 (read, no write, and execute), and 4 is 4+0+0 (read, no write, and no execute).
+
+$ chmod -R 755 myfiles
+Recursively (-R) Change the permissions of the directory myfiles, and all folders and files it contains, to mode 755. User can read, write, and execute; 
+group members and other users can read and execute, but cannot write.
+
+
 tty:
 grep:
 find:
@@ -133,23 +260,16 @@ kill:
 wget:
 chown:
 Netcat(nc):
-mv:
 fdisk:
 mount:
 ifconfig:
-rm:
-mkdir:
 nohup:
-tail:
 whoami:
 xargs:
 chroot:
-du:
 fsck:
 dpkg:
-rmdir:
 dmesg:
-cp:
 expr:
 env:
 init:
@@ -159,3 +279,7 @@ echo:
 tee:
 gunzip:
 su:
+tar:
+awk
+sed:
+
