@@ -5,4 +5,25 @@ purpose language.
 2+3 :5
 9-1 :8
 2*3 :6
-8/4 :2.0
+8/4 :2.0 --- Float value representation
+5//2 :2  --- integer devision or floor devision
+8+9-10 :7 --- it will work for more operations as well
+8+9-  : --- invalid syntax
+8+2*3 :14 --- it will follow BODMAS(brackets,orders under roots etc,Div,mul,add,sub) rule
+(8+2)*3 :30 
+2**3:8 --- it will act as exponent
+10//3:3 --- remainder 1 is there
+10%3:1 --- here % acts as modulus which will give remainder value to us
+'urmila' : 'urmila' --- it will work for strings.
+print('urmila') : urmila 
+Note:We can use certain functions(set of tasks are defined) to do this task and here print is a prebuilt funtion, but we can also define our own functions in python.
+print('urmila's notes') --- invalid syntax
+print("urmila's notes") : urmila's notes --- works here
+print('urmila "notes"') : urmila "notes" --- we have to use diff codes.
+print('urmila's "notes"') : invalid syntax
+print('urmila\'s "notes"') : urmila's "notes" --- backslash will ignore the meaning of this special character.
+'python'+'python' :'pythonpython' --- string concatination
+10*'python' : 'python...10 times'
+
+
+
