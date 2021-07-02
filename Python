@@ -24,6 +24,29 @@ print('urmila's "notes"') : invalid syntax
 print('urmila\'s "notes"') : urmila's "notes" --- backslash will ignore the meaning of this special character.
 'python'+'python' :'pythonpython' --- string concatination
 10*'python' : 'python...10 times'
+print('c:\docs\navin') : 
+c:\docs
+avin
+Note: here \n means new line
+print(r'c:\docs\navin') : c:\docs\navin --- r stands for raw it will prints raw string.
+
+Variables:
+
+x=2 --- x is variable assigning 2 for that (its act like container)
+x+3 :5
+y=3
+x+y :5
+x=9 --- if we do like this value got changed for x.
+x+y :12
+x : 9 --- x enter gives 9 that value is in x
+abc enter --- nameerror: name abc is not defined
+x+10 :19
+_+y :22 --- underscore represent previous value result and addee with y give 22
+name='youtube' --- assigning strings it will work
+name+' rocks' :youtube rocks --- it works
+name ' rocks' --- syntax error:invalid syntax
+
+
 
 
 
