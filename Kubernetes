@@ -159,13 +159,17 @@ Statefulset:In case of DB pods it will replicate Storage space but not data in i
   
   >kubectl create deployment NAME --image=image [--dry-run] [options]
   >kubectl create deployment nginx-depl --image=nginx --->creates latest nginx container from docker hub
-  >kubeclt get deployment --->gives status od deployments.
+  >kubeclt get deployment --->gives status of deployments.
+  
   >kubectl get pod --->to see the pods with status container creating,running
   Note: Deployment has blueprint to create pod, most basic configuration for deployment(name and image to use)
+  
   >kubectl get replicaset ---> this is another component which will come by default(Replicaset is managing the replicas of pods)
   Note: Pod will have the hash of replicaset and pods hash ID. We can't create,delete replicas just deploy, for more replicas we have options. 
+  
   >kubectl edit deployment nginx-depl ---> directly editing pods(Auto generated configuration file with default values)
   Note: We can change in this configuration file in pods and save the changes it will update with new pod
+  
   >kubectl get deployment ---> new deployment is available
   >kubectl get pod --->old(terminating) and new pods are shown but new pod is running.
   >kubectl get replicaset --->old one has no pods it in and new has pods
@@ -173,21 +177,21 @@ Statefulset:In case of DB pods it will replicate Storage space but not data in i
   
   Debugging pods:
   >kubectl logs nginx-depl-5c8bf76b5b-pn2kq --->gives the logs related to pods
-  >kubectl exec -it {pod-name} -- bin/bash ---> To get the terminal of the pod(to get inside pod we will get shell - as admin) exit to come out from terminal.
+  >kubectl exec -it {pod-name} -- bin/bash ---> To get the terminal of the pod(to get inside pod we will get shell - as admin), exit to come out from terminal.
   
 
   create mongo deployment
-kubectl create deployment mongo-depl --image=mongo
-kubectl logs mongo-depl-{pod-name}
-kubectl describe pod mongo-depl-{pod-name}
+>kubectl create deployment mongo-depl --image=mongo
+>kubectl logs mongo-depl-{pod-name}
+>kubectl describe pod mongo-depl-{pod-name}
 
 delete deplyoment
-kubectl delete deployment mongo-depl --->delete the pods mango db.
-kubectl delete deployment nginx-depl
+>kubectl delete deployment mongo-depl --->delete the pods mango db.
+>kubectl delete deployment nginx-depl
 
 create or edit config file
 
-vim nginx-deployment.yaml
+>vim nginx-deployment.yaml
 
 -------
 apiVersion: apps/v1
@@ -201,7 +205,7 @@ spec:      ---->Specification of deployment
   selector:
     matchLabels:
       app: nginx
-  template:
+  template:    ----->template has metadata and its own spec here pod is defined
     metadata:
       labels:
         app: nginx
@@ -213,10 +217,10 @@ spec:      ---->Specification of deployment
         - containerPort: 8080 ----->on what port pod need to run
 
 -----
-kubectl apply -f nginx-deployment.yaml ----> nginx deployment created.
+>kubectl apply -f nginx-deployment.yaml ----> nginx deployment created.
 
-kubectl get pod ----->we can see pod created and running
-kubectl get deployment. ---->deployment created few secs ago
+>kubectl get pod ----->we can see pod created and running
+>kubectl get deployment. ---->deployment created few secs ago
 Note:We can change the file configuration if any extra replicas required, then again run apply command.
 
 YMAL configuration file in kubernetes
@@ -226,6 +230,7 @@ overview:
 -Demo
 
 3 parts are:
+
 1) Metadata :Name of the component
 2)Specification: every configuration is defined here(attributes inside spec are specific to kind -deployment or service).
 first two lines gives us what is kind of component and apiversion will change for every deployment and service.
@@ -258,9 +263,143 @@ Formate of configuration file:
 - syntax: it is strict with syntax. (yaml validators online to fix syntax)
 - store the config file with your code or to have its own git repository.
 
+Connecting components:
+
+Labels and Selectors
+metadata part contains labels and spec part contains selectors
+
+metadata -- any key value pair for componenet
+
+-------
+labels:
+ app:nginx  ---> here we have nginx
+-------
+ 
+ -pods get the label through the template blueprint.
+ -This label is matched by the selector
+ 
+ -------
+  selector:
+   matchLabels:
+    app:nginx
+ -------
+
+>kubectl apply -f nginx-deployment.yaml
+>kubectl apply -f nginx-service.yaml
+>kubectl get pod
+>kubectl get service ---->it will shows services created and with the defined name,port etc.
+>kubectl describe service nginx-service
+Note:here we get info related to service and endpoints are also found where IP addresses of pods under that service are defined.
+>kubectl get pod -o wide ----> here we get more info IP address also present.
+
+Status Automatically generated:
+>kubectl get deployment ngnix-deployment -o yaml ---->will get the updated configuration of deployment which result in the etcd of cluster for every component.
+>kubectl get deployment ngnix-deployment -o yaml>nginx-deployment-result.yaml ---->saving output in the file
 
 delete with config
-kubectl delete -f nginx-deployment.yaml
+>kubectl delete -f nginx-deployment.yaml ----->to delete the deployment.
+>kubectl delete -f nginx-service.yaml
+
+Complete Application setup with kubernetes components:
+mangodb,mangoexpress
+we can create mangodb pod and create internal service to the pod so that only internal requests take to the pod. 
+
+Then we create mango express  
+1)give URL of mango db so that mango express will connect to DB
+2)mango db username and pwd so that mango express will authenticate to DB
+Note: We can pass this data to mango express with deployment.yaml configuration file by declaring some variables. We have configmap which contains URLs and 
+Secrets contains credentials we have referance for this in deployment file. Now mango express access this through browser in order to do this we have an external
+service that allow external request to talk to the pod.
+URL:
+-Ip address of node
+-Port of external service.
+
+Browser Request flow through the k8s components:
+Request starts from browser --->it will connect with mango express external service ---->sends it to mango express pod --->then internal service of mango DB
+(db URL) --->then it will send to mango db pod where it will authenticate the request using credentials.
+
+>kubectl get all --->it will get all components running in k8s
+
+nodePort:must be in the range of 30000 to 32767 --->this port no is given in browser to access external service
+
+>minikube service mongodb-express-service --->displays name,url with publice IP and external port as specified to open in browser.
+
+Kubernetes namespaces:
+- What is a Namespace?
+- What are the use cases?
+- How namespaces work and how to use it?
+
+In k8s we can organise resources in namespaces, there are many namespaces in kubernetes cluster.We can say name space is virtual cluster inside cluster.
+k8s provides default namespaces
+>kubectl get namespace ---->gives names of default namespaces
+
+5)kubernetes-dashboard is only with minikube it is not installed in cluster.
+1)kube-system namespace --->is not ment for you basically you should not create or modify in kube-system. The components that are defined in kube-system are system
+processes they are from master managing process or kubectl etc.
+2)kube-public namespace contains publicly accessible data, it has a configmap which contains cluster information so it is accessible without authentication.
+>kubectl cluster-info ---> gives info is control panel, kube DNS are running.
+3)kube-node-lease ---> hold info of heartbeats of nodes, each node has assiociated lease object in namespace, determine the availability of a node.
+4)Default namespace ---> To create resources at the begining if you haven't created a new name space. You can add and create new namespaces.
+
+>kubectl create namespace my-namespace ---> to create namespace.
+>kubectl get namespace --->we can see new namespace in the list.
+
+what is the use of namespaces?
+
+1)Create namespaces with configuration files:
+If we create all our resources in default namespace it will be hard to find the specific resouces belongs to so, we can create our own namespaces to avoid the
+confusion,ex:create db namespace and add all resources related to DB, like monitorning, elastic stack, nginx-ingress name space etc logically grouping the 
+resources inside the cluster, it is not suggested for smaller projects contains lessthan 10 resources.
+
+2)conflicts:
+If two teams are using same cluster they can deploy same app so that the 2nd app deployment overwrite 1st app deployment. Inorder to avoid the conflicts 
+in cluster give two namespaces for each team to aviod overwiting even if the app name is same. If they are using jenkins automation tool for deployment 
+they not even knows they have overwritten.
+
+3)Resource sharing: staging and deployment:
+If two staging and deployment or (production blue and production green) are using same Nginx-ingress controller,Elastic stack then we can place in diff 
+namespace and share them two both staging and deployment.
+
+4)Limit resources and access to namespaces when you are working with diff namespaces:
+If two teams are working on two diff namespaces in the same cluster, grant permissions only to the respective namespaces avoiding the teams to access and 
+change other teams deployments.Each  team has it own,isolated environment.Limit CPU,RAM,Storage per namespaces.
+
+Characteristics of namespaces?
+
+1)You can't access most of the resources from another namespace. Each NS must have its configmap and secrets.
+2)Service in another NS can be used by the other NS
+3)Components, which can't be created within a NS, they live globally in a cluster and you can't isolate them like volume,node etc
+>kubectl api-resources --namespaced=false ---> to list the isolate resources or not in NS in cluster.
+>kubectl api-resources --namespaced=true --->resources in NS.
+
+Create componenets in a NS:
+
+------
+mysql-configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+data:
+  db_url: mysql-server.database
+------
+
+Note: If no NS is defined then the resource will be created in default NS.
+>kubectl apply -f mysql-configmap.yaml
+>kubectl get configmap
+>kubectl get configmap -n my-namespace
+>kubectl get all -n my-namespace  --->all resources in NS are listed
+>kubectl apply -f mysql-configmap.yaml --namespace=my-namespace --->create configmap in the namespace
+>kubectl get configmap -n my-namespace ----> to verify the resource in namespace 
+
+Change active namespace:
+To change from default NS to specific NS we need to install an app called "kubens".
+>brew install kubectx ---> this can install kubens as well
+
+
+
+
 
 #Metrics
 kubectl top The kubectl top command returns current CPU and memory usage for a cluster’s pods or nodes, or for a particular pod or node if specified.
