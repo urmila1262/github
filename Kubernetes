@@ -74,7 +74,7 @@ ConfigMap: External configuration for your app like DB etc and it is connected t
 Secret:Secrets came into picture becoz we can't store pwd of DB in configmap, so in secrets we put our DB credentials and which is encoded in base64.Just like
   configmap we can also connect secret to the pod so that pod can access data in both by using environmental varables or as a properties file.
   
-Volumes:If DB pod or service get restared our data will gone so Volumes came into picture.Volume is physical storage on local machine or remote outside of k8's 
+Volumes:If DB pod or service get restarted our data will gone so Volumes came into picture.Volume is physical storage on local machine or remote outside of k8's 
   cluster(may be cloud or your own storage).k8's doesn't maintain any data persistance.
   
 Replica:Suppose if the pod crushes or restarts in production it will effect our operations so,we need to maintain replica of pods with same service and it also 
@@ -149,7 +149,7 @@ Statefulset:In case of DB pods it will replicate Storage space but not data in i
   >minikube
   >minikube start --vm-driver=hyperkit --->saying minikube to use hyperkit hypervisor
   >kubectl get node --->gives status of running nodes
-  >minikube status --->we can status on minikube,kubectl,APIserver running or not and kubeconfig -configured.
+  >minikube status --->we can get status of minikube,kubectl,APIserver running or not and kubeconfig -configured.
   >kubectl version --->to know the version of client and server.
   >kubectl get deployment --->to show deployments
   >kubectl get pod --->status of pods
