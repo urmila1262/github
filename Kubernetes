@@ -396,6 +396,82 @@ Note: If no NS is defined then the resource will be created in default NS.
 Change active namespace:
 To change from default NS to specific NS we need to install an app called "kubens".
 >brew install kubectx ---> this can install kubens as well
+>kubens ----> gives list of NS and highlight hte one which is active.
+>kubens my-namespace ----> to switch the active NS to the specified NS.
+
+Note: Now we can execute Kubectl commands directly without specifying NS as we have used before for default NS.Installation of kubens is differ for OS.
+
+
+Kubernetes Ingress:
+
+- What is ingress?
+- Ingress YAML configuration
+- When do you need ingress?
+- Ingress Controller
+
+Note: Now we are connecting with an external app through browser by giving IP ,port and http secure protocal, but we can do through "my-app ingress" component
+from internal, external service send to ingress and ingress send request to internal service and eventually goes to pod.
+
+exe:
+type: LoadBalance
+  nodePort: 35010
+  
+This is for external connection, by providing external port no:
+
+With ingress:
+
+---------
+apiVersion: networking.k8s.io/b1betal
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  rules:       --------->routing rules:this host must be forwarding the request to the internal service.User enter browser and ingress define mapping.
+  - host: myapp.com   ---->Valid domain address, maps domain name to node's IP address, which is entrypoint.(the node will be inside or outside kubernetes cluster)
+    http:   ------->this protocal is not from external path, this is for incoming request gets forwarded to internal service.
+      paths:       ----->this is URL path http://domain/path what ever the path after domain that is mentioned here
+      - backend:
+          serviceName: myapp-internal-service    ----->this is internal service, once ingress maps this is redirected to internal service
+          servicePort:8080
+---------
+
+How to configure ingress in your K8s cluster?
+We need implimentation for ingress which is ingress controller which is pod or set of pods in K8s cluster that evalutes and process ingress rules. The above yaml
+file is installed in ingress.
+
+pod<--- app service <---Ingress <----ingress contorller pod
+
+What is ingress controller?
+
+Function of ingress controller is to evalute all rules that you are defined in your cluster to manage all the redirections. This will be the entrypoint to all 
+the domains and sub-domains you configured and it will evaluate all the rules in your cluster there are more than 50 rules, which farwording rule applys for that
+specific request. k8s Nginx Ingress controller is one of the important controller.
+
+Environment on which your cluster runs:
+Cloud service provider like AWS,google cloud ..etc this have out-of-box k8s solutions and have own virtualized load balancer.Here cloud load balancer is there
+the external request first hits the load balancer and load balaner send request to ingress controller.
+
+Advantage of cloud provider is you don't have to implement load balancer by yourself it is up and running you can send requset to k8s cluster.
+If you runnung k8s cluster in bare metal env you need to configure some kind of entrypoints.Either inside of cluster or outside as separate server you need to 
+provide entrypoint and one of those is external proxy server which can be a software or hardware solution that will take the role of load balancer and entrypoint
+to your cluster.you have a separate server and you would give IP address and open ports to the request to be accepted and this proxy server will act as 
+entrypoint to the k8s cluster and this is the only one server accessing from outside in k8s this is really good security practice.
+
+So, all the request went to the proxy server from there send to ingress controller here it will choose which rule should be taken and whole internal farwording 
+will happen.
+
+Configure ingress in minikube:
+1)install ingress controller in minikube
+>minikube addons enable ingress  ----->this will automatically starts the k8s Nginx implementation of ingress controller 
+
+With one simple command ingress controller will be installed in your cluster 
+>kubectl get pod -n kube-system  ---->you will see nginx ingress controller running in your cluster
+Now you can create ingress rule the controller can evaluate.
+>kubectl get ns ---> to see the k8s dashboard(in minikube dashboard is already out-of-box exist)
+
+
+
+
 
 
 
