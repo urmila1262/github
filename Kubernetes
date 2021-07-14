@@ -468,9 +468,83 @@ With one simple command ingress controller will be installed in your cluster
 >kubectl get pod -n kube-system  ---->you will see nginx ingress controller running in your cluster
 Now you can create ingress rule the controller can evaluate.
 >kubectl get ns ---> to see the k8s dashboard(in minikube dashboard is already out-of-box exist)
+>kubectl get all -n kubernetes-dashboard   ------>shows all the components in k8s dashboard
+
+Ingress rule creation:
+------
+apiVersion: networking.k8s.io/v1betal
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+  namespace: kubernetes-dashboard
+spec:
+  rules:
+  - host: dashboard.com
+    http:
+      paths:
+      - backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 80
+------
+
+>kubectl apply -f dashboard-ingress.yaml ----->name of ingress, this command creates ingress
+>kubectl get ingress -n kubernetes-dashboard ---->NS name,this command gives us the ingress information.
+>kubectl get ingress -n kubernetes-dashboard --watch ---> this will give IPaddress of ingress
+
+Note:We can map this IP address in etc/host file so the the IP address is accessable with some name (dashboard.com this is not specific but here it is host name)
+so if we browse dashboard.com will get k8s dashboard.
+
+>kubectl describe ingress dashboard-ingress -n kubernetes-dashboard
+this command gives info of ingress here "default backend: default-http-backend:80" so in k8s there is no rule specific to take backend it will be take by default
+backend service.
+
+------
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-http-backend  --->name of default
+spec:
+  selector:
+    app: default-response-app
+  ports:
+    - protocol:TCP
+      port: 80   ---->port of default backend
+      targetPort: 8080
+------
+
+Defining multiple paths for same host:
+For ex: google is one domain but have multiple services
+
+Multiple sub-domains or domains:
 
 
+Helm - Package manager of K8s:
 
+- Main concepts of Helm.
+- Helm changes a lot between versions
+  understanding the basic common principles and use cases when and how we use Helms.
+  
+What is Helm?
+
+Helm has many functions 
+
+1)is used as package manager for k8s
+To package yaml files and distribute them in public and private repositories.
+ex: you have deployed your app in k8s cluster and you want to deploy Elastic stack additionally in cluster your app will use it to collect logs. To deploy 
+elastic stack in k8s cluster you need some services like stateful set,configMap,secrets,k8s user with permissions,services etc
+
+Helm Charts:
+- Bundle of yaml files.
+- Create your own Helm charts with helm.
+- Push them to Helm repository
+- Download and use existing ones
+
+Sharing Helm Charts:
+you need some deployment in your cluster, you can search
+>Helm search <keyword>  or you can to Helm Hub ------>already existing Helms are present.
+public and private repositories are there for Helm - private helms are related to organization shared within it.
+
+2)Templating Engine:
 
 
 
