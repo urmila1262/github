@@ -515,9 +515,51 @@ spec:
 Defining multiple paths for same host:
 For ex: google is one domain but have multiple services
 
+------
+apiVersion: networking.k8s.10/v1beta1
+kind: Ingress
+metadata:
+  name: simple-fanout-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: myapp.com
+    http:
+      paths:
+      - path: /analytics
+        backend:
+          serviceName: analytics-service
+          srevicePort: 3000
+      - path: /shopping
+        backend:
+          serviceName: shopping-service
+          servicePort: 8080
+          
+------
+Here we can access different services with the help of the url and ports assigned for that services.
+
 Multiple sub-domains or domains:
-
-
+-------
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: name-virtual-host-ingress
+spec:
+  rules:
+  - host: analytics.myapp.com
+    http:
+      paths:
+        backend:
+          serviceName: analytics-service
+          servicePort: 3000
+  - host: shopping.myapp.com
+    http:
+      paths:
+        backend:
+          serviceName: shooping-service
+          servicePort: 8080
+-------
 Helm - Package manager of K8s:
 
 - Main concepts of Helm.
@@ -545,6 +587,49 @@ you need some deployment in your cluster, you can search
 public and private repositories are there for Helm - private helms are related to organization shared within it.
 
 2)Templating Engine:
+
+--------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+  - name: my-app-container
+    image: my-app-image
+    port: 9001
+--------
+
+Deployment and service configurations are almost same but only diff is the app name(or image name) and version.Without helm you would have to write
+multiple yaml files for each microservices but with the help of helm 1)Define a common blueprint 2)Dynamic values are replaced by placeholders(this is dynamic)
+this file are called as template files
+
+-------
+apiVersion: v1
+kind :Pod
+metadata:
+  name: {{ .Values.name }}
+spec:
+  containers:
+  - name: {{ .Values.container.name }}
+    image: {{ .Values.container.image }}
+    port: {{ .Values.container.port }}
+-------
+
+This values are dynamic and this are defined in external values.yaml file separately
+
+------
+name: my-app
+container:
+  name: my-app-container
+  image: my-app-image
+  port:9001
+------
+
+object, which is created based on the values defined either via values.yaml file or with --set flag from command line, this is practical for CI/CD. In your build
+you can replace the values on the file.
+
+
 
 
 
