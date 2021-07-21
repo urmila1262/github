@@ -251,12 +251,376 @@ Recursively (-R) Change the permissions of the directory myfiles, and all folder
 group members and other users can read and execute, but cannot write.
 
 
-tty:
-grep:
-find:
+tty: Teletype
+The tty command of terminal basically prints the file name of the terminal connected to standard input. 
+tty is short of teletype, but popularly known as a terminal it allows you to interact with the system by passing on the data (you input) to the system, 
+and displaying the output produced by the system.
+
+You can use function keys Ctrl+Alt with function keys F3 to F6 and have four TTY sessions open if you choose. 
+For example, you could be logged into tty3 and press Ctrl+Alt+F6 to go to tty6. To get back to your graphical desktop environment, press Ctrl+Alt+F2.
+
+grep: Global regular expression print
+globally search for regular expression and print out
+
+Option	Function
+-v	Shows all the lines that do not match the searched string
+-c	Displays only the count of matching lines
+-n	Shows the matching line and its number
+-i	Match both (upper and lower) case
+-l	Shows just the name of the file with the string
+
+EX:
+cat f1 | grep pattern --->this will give all the lines containing pattern
+cat f1 | grep -i pattern ---> it will display all pattern with out case insensitive
+cat f1 | grep -n pattern ----> gives no:of times pattern found
+cat f1 | grep -v pattern ---> (reverse) display lines not containing pattern
+grep -l pattern --->displays files containing pattern.
+
+
+Find Command in Unix
+Syntax:
+
+find [options] [paths] [expression]
+The options for this command are used to specify how symbolic links should be treated. This is followed by the set of paths to search in. If no paths are specified, then the current directory is used. The given expression is then run on each of the files found in the paths.
+
+The expression consists of a series of options, tests, and actions, each returning a boolean. The expression is evaluated left to right for each file in the path until the result is determined i.e. the result is known to be true or false.
+
+Option expressions are used to constrain the find operation, and always return true.
+-depth: process the directory contents before processing the directory itself.
+-maxdepth: the max levels below the provided paths to descend for a match.
+-mindepth: the min levels beyond the provided paths to descend before matching.
+Test expressions are used to evaluate specific properties of the files and return true or false accordingly. (Wherever a count ‘n’ is used: without any prefix the match is for the exact value of n; with a ‘+’ prefix, the match is for values greater than n; and with a ‘-‘ prefix, the match is for values lesser than n.)
+-atime n: Returns true if the file was accessed n days ago.
+-ctime n: Returns true if the file’s status was changed n days ago.
+-mtime n: Returns true if the file’s contents were modified n days ago.
+-name pattern: Returns true if the file’s name matches the provided shell pattern.
+-iname pattern: Returns true if the file’s name matches the provided shell pattern. The matching here is case insensitive.
+-path pattern: Returns true if the file’s name with the path matches the shell pattern.
+-regex pattern: Returns true if the file’s name with the path matches the regular expression.
+-size n: Returns true if the file size is n blocks.
+-perm – mode: Returns true if all the permission bits for mode are set for the file.
+-type c: Returns true if the file is of type c (e.g. ‘b’ for block device file, ‘d’ for directory etc.).
+-username: Returns true if the file is owned by username ‘name’.
+The action expressions are used to define actions that have side effects and may return true or false. If not actions are specified, the ‘-print’ action is performed for all matching files.
+-delete: Delete the matched file, and return true if successful.
+-exec command: Execute the given command for each matching file, and return true if the return value is 0.
+-ok command: Like the ‘exec’ expression, but confirms with the user first.
+-ls: List the matching file as the per ‘ls -dils’ format.
+-print: Print the name of the matching file.
+-prune: If the file is a directory, do not descend into it, and return true.
+The expression is evaluated from left to right and is put together using the following operators.
+\( expr \): Used to force precedence.
+! expr: Used to negate an expression.
+expr1 -a expr2: The result is an ‘and’ of the two expressions. The expr2 is only evaluated of expr1 is true.
+expr1 expr2: The ‘and’ operator is implicit in this case.
+expr1 -o expr2: The result is an ‘or’ of the two expressions. The expr2 is only evaluated of expr1 is false.
+Examples
+List all files found in the current directory and its hierarchy
+
+$ find.
+List all files found in the current hierarchy, and all the hierarchy below /home/xyz
+
+$ find. /home/XYZ
+Search for a file by the name abc in the current directory and its hierarchy
+
+$ find ./ -name abc
+Search for a directory by the name xyz in the current directory and its hierarchy
+
+$ find ./ -type d -name xyz
+Search for a file by the name abc.txt below the current directory, and prompt the user to delete each match.
+
+Note that the “{}” string is substituted by the actual file name while running and that the “\;” string is used to terminate the command to be executed.
+
+$ find ./ -name abc.txt -exec rm -i {} \;
+Search for files that were modified in the last 7 days below the current directory
+
+$ find ./ -mtime -7
+Search for files that have all permissions set in the current hierarchy
+
+$ find ./ -perm 777
+
+---------
+
+find - search for files in a directory hierarchy
+
+SYNOPSIS
+find [-H] [-L] [-P] [-D debugopts] [-Olevel] [path...] [expression]
+DESCRIPTION
+find searches the directory tree rooted at each given file name by evaluating the given expression from left to right, according to the rules of precedence, until the outcome is known (the left hand side is false for and operations, true for or), at which point find moves on to the next file name.
+OPTIONS
+TAG	DESCRIPTION
+-P	Never follow symbolic links. This is the default behaviour. When find examines or prints information a file, and the file is a symbolic link, the information used shall be taken from the properties of the symbolic link itself.
+-L	Follow symbolic links. When find examines or prints information about files, the information used shall be taken from the properties of the file to which the link points, not from the link itself (unless it is a broken symbolic link or find is unable to examine the file to which the link points). Use of this option implies -noleaf. If you later use the -P option, -noleaf will still be in effect. If -L is in effect and find discovers a symbolic link to a subdirectory during its search, the subdirectory pointed to by the symbolic link will be searched.
+-H	Do not follow symbolic links, except while processing the command line arguments. When find examines or prints information about files, the information used shall be taken from the properties of the symbolic link itself. The only exception to this behaviour is when a file specified on the command line is a symbolic link, and the link can be resolved.
+EXAMPLES
+EXAMPLE-1:
+
+To find all the files whose name is xyz.txt in a current working directory.:
+
+# find . -name names.txt
+
+output:
+# ls
+names.txt  test.txt  xyz.txt
+# find . -name names.txt
+./names.txt
+
+EXAMPLE-2:
+
+To find all the files under /tmp directory with name xyz.txt.
+
+# find /tmp -name names.txt
+
+output:
+# ls /tmp/
+names.txt  test.txt  xyz.txt
+
+# find /tmp/ -name names.txt
+/tmp/names.txt
+
+EXAMPLE-3:
+
+To find all the files whose name is names.txt and contains both capital and small letters in /tmp directory.:
+
+# find /tmp -iname names.txt
+
+output:
+# ls /tmp/
+names.txt  Names.txt  test.txt  xyz.txt
+
+# find /tmp/ -iname names.txt
+/tmp/Names.txt
+/tmp/names.txt
+
+EXAMPLE-4:
+
+To find all directories whose name is test in / directory.
+
+# find / -type d -name test
+output:
+/usr/src/linux-headers-3.19.0-25/lib/raid6/test
+/usr/src/linux-headers-3.19.0-25-generic/include/config/pkcs7/test
+/usr/src/linux-headers-3.19.0-25-generic/include/config/v4l/test
+/usr/src/linux-headers-3.19.0-25-generic/include/config/test
+/usr/src/linux-headers-3.19.0-25-generic/include/config/usb/ehset/test
+/usr/lib/python3.4/test
+/usr/lib/python2.7/dist-packages/OpenSSL/test
+/usr/lib/python2.7/dist-packages/twisted/trial/_dist/test
+/usr/lib/python2.7/dist-packages/twisted/trial/test
+/usr/lib/python2.7/dist-packages/twisted/manhole/ui/test
+/usr/lib/python2.7/dist-packages/twisted/manhole/test
+/usr/lib/python2.7/dist-packages/twisted/internet/test
+/usr/lib/python2.7/dist-packages/twisted/application/test
+/usr/lib/python2.7/dist-packages/twisted/test
+/usr/lib/python2.7/dist-packages/twisted/persisted/test
+/usr/lib/python2.7/dist-packages/twisted/python/test
+/usr/lib/python2.7/dist-packages/twisted/scripts/test
+/usr/lib/python2.7/dist-packages/twisted/protocols/test
+/usr/lib/python2.7/test
+
+EXAMPLE-5:
+
+To find all php files whose name is test.py in / directory.
+
+# find / -type f -name test.py
+output:
+/usr/lib/python2.7/dist-packages/chardet/test.py
+
+EXAMPLE-6:
+
+To find all py files in / directory.
+
+# find / -type f -name "*.py"
+
+output:
+/etc/python3.4/sitecustomize.py
+/etc/python2.7/sitecustomize.py
+/usr/src/linux-headers-3.19.0-25/scripts/analyze_suspend.py
+/usr/src/linux-headers-3.19.0-25/scripts/rt-tester/rt-tester.py
+/usr/src/linux-headers-3.19.0-25/scripts/checkkconfigsymbols.py
+/usr/src/linux-headers-3.19.0-25/scripts/tracing/draw_functrace.py
+/usr/share/doc/python-debian/examples/deb822/grep_native_packages.py
+/usr/share/doc/python-pam/examples/pamtest.py
+/usr/share/doc/apt-xapian-index/examples/axi-query-similar.py
+/usr/share/doc/apt-xapian-index/examples/axi-query-tags.py
+...
+...
+...
+/usr/lib/python2.7/bsddb/dbobj.py
+/usr/lib/python2.7/bsddb/db.py
+/usr/lib/python2.7/bsddb/dbshelve.py
+/usr/lib/python2.7/urllib.py
+/usr/lib/python2.7/optparse.py
+/usr/lib/python2.7/runpy.py
+/usr/lib/python2.7/fractions.py
+/usr/lib/python2.7/popen2.py
+/usr/bin/miniterm.py
+
+EXAMPLE-7:
+
+ To find all the files whose permissions are 777.
+
+# find . -type f -perm 0777 -print
+
+output:
+# ls -l /tmp/
+total 4
+-rwxrwxrwx 1 root   root    0 Dec 29 15:06 names.txt
+-rw-r--r-- 1 root   root    0 Dec 29 15:13 Names.txt
+-rwxrwxrwx 1 ubuntu ubuntu 13 Dec 28 01:12 test.txt
+-rw-r--r-- 1 root   root    0 Dec 29 15:05 xyz.txt
+
+# find /tmp -type f -perm 0777 -print
+/tmp/names.txt
+
+EXAMPLE-8:
+
+To find all files that belongs to user ubuntu under /tmp directory.
+
+# find /tmp -user ubuntu
+
+output:
+# ls -l /tmp
+total 4
+-rw-r--r-- 1 root   root    0 Dec 29 15:13 Names.txt
+-r--r--r-- 1 ubuntu ubuntu 13 Dec 28 01:12 test.txt
+-rw-r--r-- 1 root   root    0 Dec 29 15:05 xyz.txt
+
+# find /tmp -user ubuntu
+/tmp/test.txt
+
+EXAMPLE-9:
+
+To find all files that belongs to group ubuntu under /tmp directory.
+
+# find /tmp -group ubuntu
+
+output:
+# ls -l /tmp
+total 4
+-rw-r--r-- 1 root   root    0 Dec 29 15:13 Names.txt
+-r--r--r-- 1 ubuntu ubuntu 13 Dec 28 01:12 test.txt
+-rw-r--r-- 1 root   root    0 Dec 29 15:05 xyz.txt
+
+# find /tmp -group ubuntu
+/tmp/test.txt
+
+EXAMPLE-10:
+
+* To find a single file called names.txt and remove it.
+
+# find . -type f -name "names.txt" -exec rm -f {} \;
+
+output:
+# ls /tmp
+names.txt  Names.txt  test.txt  xyz.txt
+
+# find /tmp -type f -name "names.txt" -exec rm -f {} \;
+
+# ls /tmp
+Names.txt  test.txt  xyz.txt
+
+
 netstat:
+The network statistics ( netstat ) command is a networking tool used for troubleshooting and configuration, that can also serve as a monitoring tool
+for connections over the network. Both incoming and outgoing connections, routing tables, port listening, and usage statistics are common uses for this command.
+
+It delivers basic statistics on all network activities and informs users on which portsand addresses the corresponding connections (TCP, UDP) 
+are running and which ports are open for tasks.
+
 gzip:
+syntax:gzip [OPTION]... [FILE]
+
+Gzip compresses only single files and creates a compressed file for each given file. By convention, the name of a file compressed with Gzip should end 
+with either .gz or .z.
+
+If you want to compress multiple files or directory into one file, first you need to create a Tar archive and then compress the .tar file with Gzip. 
+A file that ends in .tar.gz or .tgz is a Tar archive compressed with Gzip.
+
+gzip filename
+
+Use the -v option if you want to see the percentage reduction and the names of the files that are being processed:
+gzip -v filename   
+filename:	  7.5% -- replaced with filename.gz
+
+You can also pass multiple files as arguments to the command. For example, to compress the files named file1, file2, file3, you would run the following command:
+gzip file1 file2 file3
+The command above will create three compressed files, file1.gz, file2.gz, file3.gz.
+
+To compress all files in a given directory, use the -r option:
+gzip -r directory
+
+
+
+gunzip:
+Decompressing Files with gunzip
+
+syntax: gunzip [OPTION]... [FILE]
+gunzip filename.gz
+
+By default, once decompressed, gunzip will remove the compressed file. Use the -k option to keep the file:
+gunzip -k filename.gz
+
+To write the output on the terminal use the -c option. This allows you to keep the compressed file and optionally decompress it to another location:
+gunzip -c filename.gz > /directory/path/filename
+
+The gunzip command also accept multiple files as arguments:
+gunzip file1.gz file2.gz file3.gz
+
+To recursively decompresses all files in a given directory, use the -r option:
+gunzip -r directory
+
+When used with the -l option, gunzip shows information about the given compressed files:
+gunzip -l filename.gz
+
+
+ps: process status
+ps (processes status) is a native Unix/Linux utility for viewing information concerning a selection of running processes on a system: it reads
+this information from the virtual files in the /proc filesystem. It is one of the important utilities for system administration specifically under 
+process monitoring, to help you understand whats is going on in a Linux system.
+
+If you run the ps command without any arguments, it displays processes for the current shell.
+$ ps 
+
+Display every active process on a Linux system in generic (Unix/Linux) format.
+$ ps -A
+OR
+$ ps -e
+
+Display all processes in BSD format.
+$ ps au
+OR
+$ ps axu
+
+To perform a full-format listing, add the -f or -F flag.
+$ ps -ef
+OR
+$ ps -eF
+
+You can select all processes owned by you (runner of the ps command, root in this case), type:
+$ ps -x 
+
+To display a user’s processes by real user ID (RUID) or name, use the -U flag.
+$ ps -fU tecmint
+OR
+$ ps -fu 1000
+
+The command below enables you to view every process running with root user privileges (real & effective ID) in user format.
+$ ps -U root -u root 
+
+
 kill:
+kill command sends a signal to a process which terminates the process.
+
+1. kill -l :To display all the available signals you can use below command option:
+Syntax:
+$kill -l
+
+2. kill pid : To show how to use a PID with the kill command.
+Syntax:
+$kill pid
+
+
 wget:
 chown:
 Netcat(nc):
@@ -277,7 +641,6 @@ passwd:
 sleep:
 echo:
 tee:
-gunzip:
 su:
 tar:
 awk
