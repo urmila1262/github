@@ -208,3 +208,62 @@ NETWORK:
 ---- docker file for nginx and tomcat?
 what is conterziation
 
+
+
+
+
+
+
+
+
+####################
+
+
+# docker run postgres:9.6 --->run postgres SQL of 9.6 version
+# docker ps ---> see all running containers
+
+Docker image: Image is the actual package that contains all dependencies and configurations, artifact that can be moved around.(not running)
+Docker container: Pull that image and actually start the application to run on local machine that creates a container environment.(running)  
+(or) container is a running environment for image.
+
+Note: Container has a port which is useful to talk to the application running inside the container and container has its own file system which is diff from 
+file system of host.
+
+Docker hub: contains all images along with afficial images.
+
+
+Docker                                     VM
+
+Applications } vertualises apps           Applications }vertualises both apps and kernal
+os kernal                                 os kernal
+Hardware                                  Hardware
+
+Adv: size:Docker images are smaller in size
+speed: docker containers start and run much faster
+Compatability: VM of any OS can run on any OS host, but can't do with docker
+
+Basic commands:
+
+# docker pull redis --->pull from docker hub
+# docker images  --->list all images
+# docker run redis ---> runs images called container.
+# docker ps     ------>lists all running containers , ctrl+c to terminate
+# docker run -d redis ----> to run in detach mode, gives ID
+# docker ps --->gives container running with ID
+# docker stop (ID of container) --->stops container
+# docker start (ID of container) --->again starts the container
+# docker ps -a --->list all stopped and running containers
+# docker run redis:4.0 ---> it will pull and run the 4.0 version of redis.
+# docker ps ---> two containers are running
+
+
+
+
+
+
+
+
+
+
+
+
