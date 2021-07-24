@@ -256,6 +256,42 @@ Basic commands:
 # docker run redis:4.0 ---> it will pull and run the 4.0 version of redis.
 # docker ps ---> two containers are running
 
+Note: Here two docker contaners will be running with same container port but it should be diff with host port no:
+
+# docker run -p6000:6379 redis  ---> binding the container port to host port and here 6000 is host port and 6379 container and redis particular container name.
+# docker ps ---> under ports we can see the binding
+# docker run -p6000:6379 -d redis --->running in detach mode
+# docker run -p6001:6379 redis:4.0 ---> other container running on diff host port, even we specify same port it will through error alreay port is allocated.
+# docker run -p6001:6379 -d redis:4.0 --->running in detach mode.
+
+Docker debugging:
+
+# docker logs container ID ---> gives logs of the specified container
+But it will be difficult to remember container ID all the time so we can specify name of container as well
+# docker logs containername ---> this also gives logs of container
+
+Note: when we run the container it will come with some random name but we can specify our own name to the container.Before giving name to the cotainer we need to 
+stop the container.
+# docker run -d -p6001:6379 --name redis-older redis:4.0 --->here redis-older is specified name
+# docker ps ---> will give container name specified and port etc
+
+Note: with docker exec we can get the terminal of the docker container, so we can check log file,config file or env variables etc
+# docker exec -it containerID /bin/bash ---> -it (interactive terminal) and this command will open bash terminal, inside terminal with root user. Here we can give
+container name as well instead of container ID.
+
+Now treminal is open we can check pwd,home,env,usr,lib,bin etc files, we can simply exit from terminal with exit command. Mostly all the containers are run with 
+light weight linux so, we can't see curl and few more commands but available commands are enough for debugging.
+
+Docker run and Docker start:
+
+Docker run: Where we can create new container from image and will specify -d -p --name all options. It will work with images and it will be used only at time of 
+container creation.
+Docker start: Docker start will work with containers, when container started it will runs with all attributes defined at the time of creation and mainly it 
+will restart stopped containers.
+
+
+
+
 
 
 
