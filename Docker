@@ -289,6 +289,13 @@ container creation.
 Docker start: Docker start will work with containers, when container started it will runs with all attributes defined at the time of creation and mainly it 
 will restart stopped containers.
 
+Development env:
+
+# docker pull mongo
+# docker pull mongo-express
+# docker images
+
+
 
 
 
