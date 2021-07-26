@@ -295,6 +295,133 @@ Development env:
 # docker pull mongo-express
 # docker images
 
+Next step is to run the mongo db and express need to estabilsh connection of mongo express with mongo db.
+
+Docker Network: 
+
+Docker provides an isolated Docker network where the containers are running, when you deploy two containers in same docker network they can talk to each other 
+just with the container name with out port no: etc, but the nodeJS will connect with them from outside by using localhost and portno:
+
+Docker provides some auto generated Networks
+
+# docker network ls  --->gives list of default networks
+# docker network create mongo-network ---->to create our own network
+
+Note: Now we can run our containers mongo db and mongo express in the mongo network by specifying its name at the time of creation of containers.
+
+# docker run -p 27017:27017 -d -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=password --name mongodb --net mongo-network mongo
+
+To create the containers inside the n/w we need to specify the env variables,default port no: of mongodb is 27017, name of container,name of network and image 
+name.
+
+To simplify above query:
+# docker run -d \
+> -p 27017:27017 \
+> -e MONGO_INITDB_ROOT_USERNAME=admin \
+> -e MONGO_INITDB_ROOT_PASSWORD=password \
+> --name mongodb \
+> --net mongo-network \
+> mongo
+
+# docker logs container ID --->gives logs whats happening.
+
+For docker express also we can check configuration variables
+# docker run -d \
+> -p 8081:8081 \
+> -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+> -e ME_CONFIG_MONGODB_ADMINPASSWORD=password \
+> --net mongo-network \
+> --name mongo-express \
+> -e ME_CONFIG_MONGODB_SERVER=mongodb \  --->here this will connect to mongodb(docker ps will give container name)
+> mongo-express
+
+connect with node JS:
+
+code
+
+# docker logs containerID | tail --->last 10 lines of logs default
+# docker logs containerID -f ---> string the logs
+
+Docker compose:
+
+Docker compose is used to run multiple docker containers. when we have 10 docker containers and trying to connect with each it will be difficult to run this
+above command for all so we are using docker compose.
+
+.yaml file: for mongo db
+
+-----
+version:'3'  --->version of docker compose
+services:    ---> list goes from here
+   mongodb:  ---->container name
+     image:mongo --->image name from docker hub, and you can include version tag as well if required.
+     ports:
+      -27017:27017  --->host:container
+     environment:
+      -MONGO..._USERNAME=ADMIN
+     
+-----
+
+This is docker compose for one specific container.
+
+.yaml file: for mongo express
+
+-----
+version:'3'
+services:
+   mongodb:
+     image:mongo
+     
+     ...
+   mongo-express:
+   
+     image:mongo-express
+     ports:
+      -8081:8081
+   environment:
+    -ME_CONFIG_MONGODB_A....
+    ...
+-----
+
+Note: Here no need to specify the docker network, docker compose will take care in which n/w identical containers should run.
+
+Create docker compose file:
+ -------
+ version: '3'
+services:
+  # my-app:
+  # image: ${docker-registry}/my-app:1.0
+  # ports:
+  # - 3000:3000
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-data:/data/db
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8080:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+volumes:
+  mongo-data:
+    driver: local
+
+ -------
+
+
+
+
+
+
+
+
 
 
 
