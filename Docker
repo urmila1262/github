@@ -387,11 +387,7 @@ Note: Here no need to specify the docker network, docker compose will take care 
 Create docker compose file:
  -------
  version: '3'
-services:
-  # my-app:
-  # image: ${docker-registry}/my-app:1.0
-  # ports:
-  # - 3000:3000
+ services:
   mongodb:
     image: mongo
     ports:
@@ -399,8 +395,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
-    volumes:
-      - mongo-data:/data/db
   mongo-express:
     image: mongo-express
     ports:
@@ -409,11 +403,63 @@ services:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
       - ME_CONFIG_MONGODB_SERVER=mongodb
-volumes:
-  mongo-data:
-    driver: local
 
  -------
+ 
+ Docker compose is already installed with Docker.
+ 
+ # docker-compose -f Docker-compose.yaml up  ---> here "f" is file  "up" will run the comtainers inside docker-compose.
+ 
+ Note: this will create both containers in the default network, here we can observed that the mongo express will connect after mongodb starts.
+ 
+ # docker network ls --->gives all the n/ws
+ # docker ps --->to see containers running and they will run on specified ports and with names.
+ 
+ Note: Here when this containers restarts the data will be lost in containers but for the data persistance in container we can use volumes.
+ 
+ 
+ # docker-compose -f Docker-compose.yaml down  ----> "down" option will stops all the containers in docker compose.
+ 
+ Note: To stop docker containers need to specify each container name every time but with docker compose it is quite simple with above command, but it will
+ stop and removes the containers and network as well, when we again start docker-compose it will re-creates the containers and network.
+ 
+ # docker-compose -f Docker-compose.yaml up -d --->run as demon and creates containers and n/w.
+ 
+ 
+ Dockerfile:
+ 
+ Note: Generally we can write java script by using node.js and commit changes to git repository then CI tool Jenkins will build the package(image) and push 
+ it to docker hub(repository).
+ 
+ What is docker file?
+ Docker file is a blueprint for creating docker images.
+ 
+ Docker file:
+ ----
+ FROM node(image)  --->install node
+ ENV MONGO_DB_USERNAME=admin \
+     MONGO_DB_PWD=password       ----->set usernsme and password
+ RUN mkdir -p /home/app   ---->create a /home/app folder, using run you can execute any linux command.(* This dir is created inside of the container)
+ COPY . /home/app  --->copy current folder files from local host to the container /home/app folder.
+ CMD["node","server.js"] ---> start the app with: "node server.js",this is always part of docker file but CMD will execute the basic command linux entry point.
+ ----
+ Note:All the steps in docker file will effect the container but not our host.
+ 
+ Difference between RUN and CMD?
+ CMD = entrypoint command (only one linux command), you can have multiple RUN commands with linux commands but CMD is one that marks dockerfile this is the 
+ entrypoint that you have to execute as entrypoint.
+ 
+ Difference between CMD and entrypoint?
+ ENTRYPOINT: command to run when container starts. 
+ CMD: command to run when container starts or arguments to ENTRYPOINT if specified.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 
