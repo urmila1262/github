@@ -415,7 +415,7 @@ Create docker compose file:
  # docker network ls --->gives all the n/ws
  # docker ps --->to see containers running and they will run on specified ports and with names.
  
- Note: Here when this containers restarts the data will be lost in containers but for the data persistance in container we can use volumes.
+ Note: Here when this containers restarts, the data will be lost in containers but for the data persistance in container we can use volumes.
  
  
  # docker-compose -f Docker-compose.yaml down  ----> "down" option will stops all the containers in docker compose.
@@ -438,7 +438,7 @@ Create docker compose file:
  ----
  FROM node(image)  --->install node
  ENV MONGO_DB_USERNAME=admin \
-     MONGO_DB_PWD=password       ----->set usernsme and password
+     MONGO_DB_PWD=password       ----->set username and password
  RUN mkdir -p /home/app   ---->create a /home/app folder, using run you can execute any linux command.(* This dir is created inside of the container)
  COPY . /home/app  --->copy current folder files from local host to the container /home/app folder.
  CMD["node","server.js"] ---> start the app with: "node server.js",this is always part of docker file but CMD will execute the basic command linux entry point.
@@ -452,6 +452,116 @@ Create docker compose file:
  Difference between CMD and entrypoint?
  ENTRYPOINT: command to run when container starts. 
  CMD: command to run when container starts or arguments to ENTRYPOINT if specified.
+ 
+ Note: Every image (docker file) takes the basic image from docker hub.
+ 
+ 
+ 
+ Dockerfile:  Name of the docker file should be with capital "D"
+ ------
+ FROM node:13-alpine
+ 
+ ENV MONGO_DB_USERNAME=admin \
+     MONGO_DB_PWD=password
+     
+ RUN mkdir -p /home/app
+ 
+ COPY . /home/app
+ 
+ CMD ["node", "server.js"]
+ ------
+ 
+ Build docker image with docker file:
+ 
+ # docker build -t my-app:1.0 .
+ 
+ Note: docker build require two parameters my-app is our image name and its version then second is where to create docker image here its in current dir.
+ The image is build and it will generate the ID.
+ 
+ # docker images   ---->will see our image with name,tag and ID.
+ 
+ Start my-app container to verify:
+ > app start successfully.
+ > app environment is configured correctly.
+ 
+ # docker run my-app:1.0
+ 
+ Error: server.js not found, becoz we copyed every thing to /home/app dir.
+ 
+ ------
+ FROM node:13-alpine
+ 
+ ENV MONGO_DB_USERNAME=admin \
+     MONGO_DB_PWD=password
+     
+ RUN mkdir -p /home/app
+ 
+ COPY . /home/app
+ 
+ CMD ["node", "/home/app/server.js"]
+ ------
+ 
+ Note: When you adjust the Dockerfile, you must rebuild the image.
+ 
+ # docker rmi imageID ---> first need to remove the image that has built already and rebuild. But before removing image, container need to remove.
+ # docker ps -a | grep my-app
+ # docker rm containerID
+ # docker rmi imageID --->now image is removed
+ # docker images     ----> our docker image not exist.
+ # docker build -t my-app:1.0 ---->rebuild the docker image.
+ # docker images  ----> to see our image from list of images
+ # docker run my-app:1.0   ----> to run our container. We got app listening on port 3000.
+ 
+ To check take containerID
+ # docker ps  ---->will get containerID from list of containers.
+ # docker logs containerID  ---> app listening on port 3000.
+ 
+ # docker exec -it contID /bin/bash  ---> some container doesn't have bash they can be executed with shell
+ # docker exec -it contID /bin/sh   ----> now terminal opens
+ /# ls   ---> inside the container it will list all the dirs.
+ /# env  ---> we will find the env variables declared by us.
+ /# ls /home/app/  ---> the dir created and it has copy of current dir.
+ /# exit
+ 
+ To modify the Dockerfile need to follow all below steps to build the image again.
+ 
+ # docker images
+ # docker ps
+ # docker stop contID
+ # docker rm contID
+ # docker rmi imageID
+ # docker images
+ # docker build -t my-app:1.0 .   ----> First need to go to the particular dir and execute this command.
+ # docker images
+ # docker run my-app:1.0  ----> Run the container and now we can run in detatched mode.
+ # docker ps
+ # docker exec -it containerID /bin/sh
+ /# ls  ---> will see the list of files in the pwd.
+ /# ls /home/app   ----> we can see what all the folders we have added to the app dir.
+ /# exit
+ 
+ 
+ Private Docker repository:
+ 
+ We can create docker private registory on Amazon AWS ECR,nexus etc
+ > Docker private repository
+ > Registry options
+ > Build and tag an image
+ > docker login
+ > docker push
+ 
+ Create private docker repository on AWS:
+ 
+ First we need to create private docker repository also called registry.
+ In AWS account use Elastic Container Registry (ECR)  ---> repositories ---> create repository (give name of repository which is same as imagename i.e my-app)
+ ---> click create repository (repository is created successfully with name my-app)
+ In AWS per each image we have to create the repository rather than pushing all images related to multiple applications into one repository.
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
