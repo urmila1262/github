@@ -256,12 +256,12 @@ Basic commands:
 # docker run redis:4.0 ---> it will pull and run the 4.0 version of redis.
 # docker ps ---> two containers are running
 
-Note: Here two docker contaners will be running with same container port but it should be diff with host port no:
+Note: Here two docker contaners will be running with same container port but it should be different with host port no:
 
 # docker run -p6000:6379 redis  ---> binding the container port to host port and here 6000 is host port and 6379 container and redis particular container name.
 # docker ps ---> under ports we can see the binding
 # docker run -p6000:6379 -d redis --->running in detach mode
-# docker run -p6001:6379 redis:4.0 ---> other container running on diff host port, even we specify same port it will through error alreay port is allocated.
+# docker run -p6001:6379 redis:4.0 ---> other container running on different host port, even we specify same port it will through error alreay port is allocated.
 # docker run -p6001:6379 -d redis:4.0 --->running in detach mode.
 
 Docker debugging:
@@ -295,7 +295,7 @@ Development env:
 # docker pull mongo-express
 # docker images
 
-Next step is to run the mongo db and express need to estabilsh connection of mongo express with mongo db.
+Next step is to run the mongo db and express, need to estabilsh connection of mongo express with mongo db.
 
 Docker Network: 
 
@@ -410,7 +410,7 @@ Create docker compose file:
  
  # docker-compose -f Docker-compose.yaml up  ---> here "f" is file  "up" will run the comtainers inside docker-compose.
  
- Note: this will create both containers in the default network, here we can observed that the mongo express will connect after mongodb starts.
+ Note: this will create both containers in the default network, here we can observe that the mongo express will connect after mongodb starts.
  
  # docker network ls --->gives all the n/ws
  # docker ps --->to see containers running and they will run on specified ports and with names.
