@@ -553,9 +553,137 @@ Create docker compose file:
  Create private docker repository on AWS:
  
  First we need to create private docker repository also called registry.
- In AWS account use Elastic Container Registry (ECR)  ---> repositories ---> create repository (give name of repository which is same as imagename i.e my-app)
- ---> click create repository (repository is created successfully with name my-app)
- In AWS per each image we have to create the repository rather than pushing all images related to multiple applications into one repository.
+ In AWS account use Elastic Container Registry (ECR)---->get started  ---> repositories ---> create repository (give name of repository which is 
+ same as imagename i.e my-app) ---> click create repository (repository is created successfully with name my-app)
+ In AWS per each image we have to create the repository rather than pushing all images related to multiple applications into one repository but you can save 
+ different tags(versions) of the same image in one repository.
+ 
+ Now we have repository in AWS and in local with same name but now we need to push the repository in local to repo in AWS first select repo in AWS there you can 
+ get option to push commits
+ 1) You have to login to private repository = docker login or if docker container is built and pushed from Jenkins then you have to give jenkins credentials.
+ (first need to authenticate ourselves) for this aws provided command.
+ 
+ $(aws ecr get-login --no-include-email --region eu-central-1) --- login succeeded
+ 
+   Pre requisites:
+    1) AWS cli needs to be installed
+    2) Credentials configured.  { but this two steps need to configure before}
+    
+  Now docker is authenticated with AWS docker repo 
+  
+  
+  Image Namings in Docker Repository:
+  
+  registryDomain/imageName:tag  but in docker we don't have this much complex, from Docker hub ---> # docker pull mongo:4.2 (short hand) but in backend it 
+  will do  # docker pull docker.io/library/mongo:4.2, but this short form is available for only docker hub 
+ 
+ For private repositry like AWS need to provide full form
+ 
+ # docker pull 520697001743.dkr.ecr.eu-central-1.amazonaws.com/my-app:1.0
+ # docker tag my-app:1.0 664574038682.dkr.ecr.eu-central-1.amazonaws.com/my-app:latest ---> domain, name of image and version (latest=1.0 we can change)
+ and docker tag = rename the image(my-app:1.0 = 664574038682.dkr.ecr.eu-central-1.amazonaws.com/my-app:latest)
+ 
+ # docker images ---> now we can see the image renamed with same container ID and tag.
+ # docker push 664574038682.dkr.ecr.eu-central-1.amazonaws.com/my-app:1.0 --->this command take the image and tag and push to 
+ 664574038682.dkr.ecr.eu-central-1.amazonaws.com
+ 
+ Now you can see the image in AWS.
+ 
+ Note: Make some changes to the App, rebuild and push a new version to AWS repo. So if we change in app we need to change in Dockerfile and rebuild the image 
+ and run container then rename the image and rebuild then push to AWS repositry. Reload the AWS page so we can see new image with new version added to the repo.
+ 
+ In AWS each repositry can have capacity to hold 1000 images.
+ 
+ With Jenkins:
+ Jenking also need to login to your private repo
+ 
+ Deploy Containerized App:
+ 1) image from a private repository
+ 2) Deploy multiple containers
+ 3) Deployment server
+ 
+ Note: The server needs to login to pull from private repository, login not needed for public dockerhub.
+ 
+ -------
+ version: '3'
+ services:
+   my-app:
+     image: 664574038682.dkr.ecr.eu-central-1.amazonaws.com/my-app:1.0
+     ports:
+     - 3000:3000
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8080:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+ -------
+ 
+ Note: This Docker-compose file would be used on the development server to deploy all the applications/services.
+ 
+ To simulate docker-compose file
+ First need to login to the docker and run the command for authentication.
+ # vim mongo.yaml   ---> copy above code and paste it in the file, save.
+ # docker-compose -f mongo.yaml up  ---> both mongodb and express starts and at specified port.
+ 
+ 
+ Persisting data with Volumes:
+ 
+ When do we need Docker Volumes?
+ Container runs on a host and db container, container have virtual file system where data usually stores but here data is not persistence. If we restart or 
+ remove container data will gone but I need data persistence then go for docker volumes.
+ 
+ What is a Docker Volume?
+ Docker volume can store data permanently on host file system(physical), folder in physical host file system is mounted into the virtual file system of Docker.
+ Now if some data entered into container file system then it will be written to the host file system vice versa, even if container restarts the data will be 
+ available in host file system.
+ 
+ 3 Volume types
+ 1)
+ # docker run -v /host dir path:/cont dir path
+ # docker run -v /home/mount/data:/var/lib/mysql/data
+ 2)
+ # docker run -v /var/lib/mysql/data
+ Note: For each container a folder is generated that gets mounted and this are automatically created by Docker.This are called as anonymous volumes.
+ 3)
+ # docker run -v name:/var/lib/mysql/data
+ Note: Here apart from mentioning path of the dir we can give name to redirect. This are called named volumes. This are mostly used volumes in the production.
+ 
+ Docker volumes in Docker-compose file.
+ -----
+ version: '3'
+ services:
+     mongodb:
+         image: mongo
+         ports:
+          - 27017:27017
+         volumes:
+          - db-data:/var/lib/mysql/data
+ -----
+ 
+ Note: In common volumes are used for Data persistence (database or stateful applications)
+ 
+ Docker volumes demo:
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
