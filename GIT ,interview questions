@@ -62,3 +62,6 @@ $ git bisect start # Starting bisect
 $ git bisect bad # stating that the current commit (v1.5) has the regression/ setting 'bad' point
 
 $ git bisect good v1.0 # mentioning it the last good working commit (without regression)
+
+
+
