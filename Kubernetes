@@ -1051,7 +1051,6 @@ spec:
      storageClassName: storage-class-name
  ----
  
- 
  Storage class config:
  ----
 apiVersion: storage.k8s.io/v1
@@ -1064,7 +1063,6 @@ parameters:
   iopsPerGB: "10"
   fsType: ext4
  ----
- 
  1) pod claims storage via PVC
  2) PVC requests storage from SC
  3) SC creates the PV that meets the need of the claims and for storage backups.
@@ -1139,7 +1137,6 @@ sticky identity: retain state,retain role
 
 Note: Stateful apps not perfect for containerized environments but it is good for stateless apps
 
-
 K8s Services:
 What is a service and when we need it?
 Each pod has its own IP address, pods are ephemeral - destroyed frequently and creates new pod with new IP address. So, service came into picture 
@@ -1159,7 +1156,6 @@ one of the pod.
 How the service knows to which pod and to which port request need to send?
 
 To which pods:
-
 this will select the pod with the help of "selector", 
 - pods are identifed via selectors.
 - key value pairs
@@ -1172,11 +1168,9 @@ If three replicas are there under the service with same label all three will be 
 - must match all the selectors 
 
 To which port:
-
 It is defined in targetPort attributes.
 
 Service endpoints:
-
 # kubectl get endpoints
 
 K8s creates endpoint objects
@@ -1189,7 +1183,6 @@ need to connect to the DB mysql so pod sends request to service to get the DB po
 Multi-Port services:
 
 - Second container running for monitoring metrics (mongo-db app,mongo-db exporter) so when you are defining multiple names define the ports for each.
-
 
 Headless Service:
 - client wants to communicate with one specific node directly.
@@ -1221,7 +1214,6 @@ Spec:
 - Default, type not needed
 - internal service
 
-
 Node port:
 ---
 apiVersion: V1
@@ -1232,6 +1224,11 @@ Spec:
   type: NodePort
 ---
 - Cluster IP is accessable only inside cluster but with Node port external traffic has to access to fixed or static port on each worker node. 
+- Here instead of ingress the request directly comes to node port, node port is perdefined value and the range of the node port value is b/w 30000  to 32767.
+It works with IP address of worker node and nodeport this connect with browser.
+Just like cluster IP we have a port here, and cluster IP is automatically created, if we run the query to check the services the nodeport service is
+created with cluster IP and cluster port:node port.
+- Node port service is not effective and not secure
 
 LoadBalancer:
 ---
@@ -1242,7 +1239,27 @@ metadata:
 Spec:
   type: LoadBalancer
 ---
-
+- Becomes accessible externally through "cloud providers LoadBalancer"
+- Node port and Cluster IP service are created automatically by K8s cluster in order to route traffic from external loadbalancer or cloud platform.
+---
+apiVersion: V1
+kind: Service
+metadata:
+  name: my-service-loadbalancer
+Spec:
+  type: LoadBalancer
+  selector:
+    app: microservice-one
+  ports:
+    - protocol: TCP
+      port: 3200
+      targetPort: 3000
+      nodePort: 30010
+ ---
+ - LoadBalancer service is an extention of NodePort service.
+ - NodePort service is an extention of ClusterIP service
+ - Nodeport service NOT for external connection in production env.
+ - Configure ingress or LoadBalancer for prod envs
 
 #Metrics
 kubectl top - The kubectl top command returns current CPU and memory usage for a cluster’s pods or nodes, or for a particular pod or node if specified.
