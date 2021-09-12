@@ -97,7 +97,7 @@ Statefulset:In case of DB pods it will replicate Storage space but not data in i
     This page outlines what is involved and describes related tasks for setting up nodes.
     
   2)Kubelet: The kubelet is the primary "node agent" that runs on each node and it interacts with both container and node.Kubelet is responsible to run the 
-    pod with a container inside by taking configuration and assigning resources from container to the pod like cpu,storage resouces.
+    pod with a container inside by taking configuration and assigning resources from container to the pod like cpu,storage resources.
     
  3)Kube proxy:It will forwards the requests(communication between node)
     kube-proxy is a network proxy that runs on each node in your cluster, implementing part of the Kubernetes Service concept. 
@@ -572,21 +572,26 @@ Helm has many functions
 
 1)is used as package manager for k8s
 To package yaml files and distribute them in public and private repositories.
-ex: you have deployed your app in k8s cluster and you want to deploy Elastic stack additionally in cluster your app will use it to collect logs. To deploy 
-elastic stack in k8s cluster you need some services like stateful set,configMap,secrets,k8s user with permissions,services etc
+ex: you have deployed your app in k8s cluster and you want to deploy Elastic stack for logging additionally in cluster your app will use it to collect logs.
+To deploy elastic stack in k8s cluster you need some services like stateful set,configMap,secrets,k8s user with permissions,services etc
 
-Helm Charts:
+Using Helm Charts:
 - Bundle of yaml files.
 - Create your own Helm charts with helm.
-- Push them to Helm repository
-- Download and use existing ones
+- Push them to Helm repository (so that others can use)
+- Download and use existing ones (you can use helms created by others)
+
+Note: commonly used deployments are like database apps,mongodb,elastic search,mysql,monitoring apps like promotheus which have complex helm charts, so for all
+this apps helms are available already, so you can reuse that configuration which others have did this sharing of helm charts improved importance of Helm.
 
 Sharing Helm Charts:
 you need some deployment in your cluster, you can search
->Helm search <keyword>  or you can to Helm Hub ------>already existing Helms are present.
+>Helm search <keyword>  or you can search in "Helm Hub" ------>already existing Helms are present.
 public and private repositories are there for Helm - private helms are related to organization shared within it.
 
 2)Templating Engine:
+
+Imagine you have an application that is made up of multiple micro services and you are deploying all in K8s cluster
 
 --------
 apiVersion: v1
@@ -602,7 +607,7 @@ spec:
 
 Deployment and service configurations are almost same but only diff is the app name(or image name) and version.Without helm you would have to write
 multiple yaml files for each microservices but with the help of helm 1)Define a common blueprint 2)Dynamic values are replaced by placeholders(this is dynamic)
-this file are called as template files
+this files are called as template files(down)
 
 -------
 apiVersion: v1
@@ -626,18 +631,621 @@ container:
   port:9001
 ------
 
-object, which is created based on the values defined either via values.yaml file or with --set flag from command line, this is practical for CI/CD. In your build
-you can replace the values on the file.
+object, which is created based on the values defined either via "values.yaml" file or with "--set flag" from command line, this is used in practical for CI/CD. 
+In your build you can replace the values on the fly before deploying them.
+
+3) Another usecase for Helm features:
+
+Same applications acorss different environments
+Ex:Suppose you want to deploy an application having multiple micro service in K8s cluster in different env like development,staging,production it will be 
+difficult to deploy in each environment separately so you can create your own Helm chart that will have all required yaml files which your deployment needs
+now you can redeploy the same deployment in various K8s clusters using one command.
+
+Helm chart structure:
+
+Tipically its like directory structure
+
+-----
+mychart/
+  Chart.yaml
+  values.yaml
+  charts/
+  templates/
+  ...
+-----
+
+Top level mychart folder ---> name of chart
+chart.yaml --->meta info about chart (name,version,list of dependencies etc)
+values.yaml ----> values for the template files - default values that can be overwrite after.
+charts folder ---> chart dependencies if this chart is depend on other charts then that charts are configured here
+templates folder ---> actual template files
+
+# helm install <chartname> ---> to deploy the yaml files into kubernetes template files will be filled with values from values.yaml
+optionally some other files like Readme or licence file will be there in this folder.
+
+Values injection into template files:
+
+values.yaml
+----
+imageName: myapp
+port: 8080
+version: 1.0.0
+----
+default
+
+# helm install --values=my-values.yaml <chartname>
+
+my-values.yaml
+----
+version: 2.0.0
+----
+overrides values
 
 
+result
+----
+imageName: myapp
+port: 8080
+version: 2.0.0
+----
+.values object
+
+Instead of above we can define on command line
+# helm install --set version=2.0.0
+NOte: But here having my-values.yaml file is best procedure than command line.
+
+Third feature:
+Release Management:
+helm versions are 2 vs 3
+
+Helm version 2 comes in two parts:
+1)Client (helm CLI)
+2)Server (Tiller)
+
+Whenever you run the helm client it sends requests to Tiller to run the k8s.
+# helm install <chartname>
+Tiller will execute the request and run the services required by using yaml files inside K8s.
+Whenever you create or change deployment Tiller will stores copy of each configuration sent by client in the server. Thus it will keep track of all chart 
+executions.
 
 
+Revision        Request
+1           Installed chart
+2.          Upgraded to v 1.0.0
+3.          Rolled back to 1 version
+
+# helm install <chartname>
+# helm upgrade <chartname>
+# helm rollback <chartname>
+
+--> Changes are applied to existing deployment instead of removing and creating new one. If there are any changes in configuration files, upgrade is wrong or 
+yaml files are wrong simply rolled back to privious version.
+--> Handling rollbacks.
+--> All the excution history is stored by Tiller when ever you send request from helm client to Tiller.
+
+Downsides of Tiller:
+1) Tiller has too much power inside of K8s cluster (like update,create delete etc - more permissions)
+2) Big Security issue, hence in helm 3 version Tiller has removed.
+3) Solves the security concern.
+
+K8s volumes explained:
+
+How to persist data in kuberneties using volumes?
+Three components of K8s storage:
+Persistent volume
+Persistent volume Claim
+Storage class
+
+The need for volumes
+For myapp application mysql DB is using and data gets added,updated in db until db pod exists, once it is restarted or crash then along with pod data will be gone.
+. So, we need storage that doesn't depend on the pod lifecycle which is outside of K8s.
+. Storage must be available on all nodes becoz we don't know on which node the new pod will be created.
+. Storage need ot servive even if the cluster crashes.
+
+Another use case for persistent storage:
+This is for directories may be you have an app the can reads/writes the files(session files,config fils etc) from a dir, you can configure any of this type of 
+data by using K8s persistent volumes. The persistent volume is like cluster resource that uses CPU or RAM for storage.
+Persistent volume can be created like any other k8s components with yaml files but need to give kind as PersistentVolume and in spec need to give various 
+parameters like storage,filesystem,permissions etc.
+
+----
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-name
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.0
+  nfs:
+    path: /dir/path/on/nfs/server
+    server: nfs-server-ip-address
+----
+
+This needs actual physical storage, like local disk inside local host,nfs(network file system) server outside cluster or cloud storage like AWS,google cloud etc
+
+Where does this storage comes from and who makes it available to the cluster?
+K8s do not take care of all this we need to know what type of storage do we need?, and we need to create and manage them by ourselves.
+Think the storage is as a external plugin to your cluster may be local disk,nfs server or cloud, so our apps inside cluster can link with local,remote or cloud
+storages to retrive data.
+
+Persistent volume yaml example:
+
+Use this physical storages in the spec section
+Ex of NFS storage as a backend:
+----
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-name
+spec:
+  capacity:
+    storage: 5Gi         --->how much storage
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce                           ------->storage parameters- permissions etc
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.0
+  nfs:
+    path: /dir/path/on/nfs/server                         ---->NFS parametes for backup
+    server: nfs-server-ip-address
+----
+
+EX of Google cloud as a backend:
+----
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: test-volume
+  labels:
+    failure-domain.beta.kubernetes.io/zone: us-central1-a__us-central1-b
+spec:
+  capacity:
+    storage: 400Gi       ---->how much storage
+  accessModes:
+  - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: my-data-disk -----> backup
+    fsType: ext4
+----
+
+Depending on storage type and backend, some of the spec attributes may vary.
+
+Ex of local storage:
+----
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/ssd1
+  nodeAffinity:               ----> node affinity is extra here
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node
+----
+
+Complete list of storage backends supported by K8s--- nearly 25 different storage backends that k8s supprot.
+
+Note: Persistent volumes are not Namespaced but it is accessible to whole cluster.
+
+Local vs Remote volume types:
+
+1) Each volume type has it's own usecase
+2) Local volume types violate 2. and 3. requirement of data persistance for data bases
+    . Being tied to 1 specific node
+    . Serviving cluster crashes     ----->becoz of this two drawbacks for DB persistence you should always use remote storage.
+    
+K8s Administrator and K8s user:
+
+Who create the persistent volumes and when?
+PV are resources like CPU,RAM  that need to be there before in the cluster when the pod that depends on it is created.
+
+K8s Admin sets up and maintains the cluster and also he will take care of enough resources in K8s cluster (system admins,DevOps engineers in a company).
+K8s user deploys applications in the cluster directly or by using CI/CD pipelines. This are developer DevOps Team who can develop the application and deploy.
+
+1) Storage resources can be provisioned by Admin in remote or cloud that will be available for the cluster.
+2) Creates the PV components form these storage backends.
+
+Based on Developers storage, what type of storage there apps need, develpoers knows what type of application and storage there applications need.
+
+Persistent volume claim component:
+
+Developer know that there is volume storage and how to use it, for this developers need to explictly configure the apps  yaml file to use those persistent 
+volume components. Another thing Application has to claim the persistent volume and to do that using another component of K8s called Persistent volume claim. 
+
+Presistent volume claim or PVC are also created by yaml files
+ex:
+----
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pvc-name
+spec:
+  storageClassName: manual
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+----
+
+PVC claims the volume with some storage capacity which is defined the persistent claim and in addition to that it will restrict like permissions(400,741, etc)
+what ever the criteria matches it will use that. We have to use that PVC in the pods configuration.
+
+-----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:      ----->Volume is mounted into the container.
+    - name: myfrontend
+      image: nginx
+      volumeMounts:
+      - mountPath: "/var/www/html"    ----> Apps can access the mounted data here "/var/www/html"
+        name: mypd
+  volumes:           ----> Here volume is mounted into the pod.
+    - name: mypd
+      persistentVolumeClaim:
+        claimName: pvc-name
+-----
+
+Here claim has configured in pods configuration, so all the pods and services inside the pod can access the PVC.
+
+Levels of volume abstractions:
+. Pod requests the volume through the PV claim
+. Claim tries to find a volume in cluster (based on the storage and permissions etc)
+. Volume has the actual storage backend (in this way volumes gets the backend)
+. Claims must be in the same namespaces where pod exists.
+
+The container will read and write the volumes and if the container dies the new container will be created in its place and it have access to the same volume.
+
+Why so many abstrictions to use volumes?
+Admin provisions storage resource.
+User creates claim to PV.
+
+ConfigMap and secrets:
+- local volumes
+- not created via PV and PVC
+- managed by Kubernetes
+
+Consider you need a configuration file for your pod or certificate file for your pod in both cases you need a file available to your pod to do this 
+1) Create ConfigMap and/or Secret component.
+2) Mount that into your pod/container.
+
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+    - name: busybox-container
+      image: busybox
+      volumeMounts:
+        - name: config-dir
+          mountPath: /etc/config
+  volumes:
+    - name: config-dir
+      configMap:        -----> like PVC here we use configMap
+        name: bb-configmap
+----
+
+What we have covered so far?
+Volume is directory with some data.
+This volumes are accessible to the containers in a pod.
+How the dirs made available and storage medium backup that and contents are defined by specific volume types 
 
 
+Different volume types in pod:
+Lets say elastic-app,configMap,secrets,needs db storage lets say awsElasticBlock Store
+
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elastic
+spec:
+  selector:
+    matchLabels:
+      app: elastic
+  template:
+    metadata:
+      labels:
+        app: elastic
+    spec:                             ----> pod specifications.
+      containers:
+      - image: elastic:latest
+        name: elastic-container
+        ports:
+        - containerPort: 9200
+        volumeMounts:
+        - name: es-persistent-storage
+          mountPath: /var/lib/data
+        - name: es-secret-dir
+          mountPath: /var/lib/secret
+        - name: es-config-dir
+          mountPath: /var/lib/config
+      volumes:                          -----> here at volumes level you can specify all the voulmes you want to mount 
+      - name: es-persistent-storage
+        persistentVolumeClaim:
+          claimName: es-pv-claim
+      - name: es-secret-dir
+        secret:                        ----> here we have secrets
+          secretName: es-secret 
+      - name: es-config-dir
+        configMap:                     ----> here is configMap
+          name: es-config-map
+----
+
+Storage class:
+1) Admins configure storage
+2) Create persistent volumes
+3) k8s users claim PV using PVC
+
+Note: In the cluster there are many apps that need storage for which PVs are required so developers request the admins to create PVs from the cloud
+that requires storage manual this is time consuming.
+
+To make this process efficiently there is 3rd component in K8s, which makes process more efficient called Storage class.
+Storage class provisions persistent volumes dynamically, when the PersistentVolumeClaims claims it. This way creating or provisioning of cluster has 
+automated.
+Storage class also gets created with yaml files.
+
+----
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-name
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+----
+ kind: StorageClass --->storage class creates persistent volumes dynamically
+ storage backend is defined in the SC component  - via "provisioner" attribute. this will tell K8s which provisioner should be used for storage plotform
+ or cloud provider to create the persitent volume automatically. Each storage backend has its own provisioner - internal provisioner - "kubernetes.io"
+ and other storage type ther are external provisioner, we can also define parameters along with provisioner.
+ 
+ Storage class is another abstraction level that abstracts underlying storage provider as well as parameters for that storage.
+ 
+ How do we use storage class in the pod parameters?
+ Same like persistent volume it is requested by PVC
+ 
+ PVC config:
+ ----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+     name: mypvc
+spec:
+     accessModes:
+     - ReadWriteOnce
+     resources:
+       requests:
+         storage: 100Gi
+     storageClassName: storage-class-name
+ ----
+ 
+ 
+ Storage class config:
+ ----
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-name
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+ ----
+ 
+ 1) pod claims storage via PVC
+ 2) PVC requests storage from SC
+ 3) SC creates the PV that meets the need of the claims and for storage backups.
+ 
+ K8s atatefulset explained:
+ 
+What is statefulset?
+In k8s component that is used specifically for stateful applications.
+
+What is stateful application?
+EX: All DBs mysql,mongoDB,elasticsearch etc.
+Any application that stores data and keeps track of its state, in other words this are apps that keeps track of data by saving it in some storage.
+
+Stateless applications in other words do not keep track of previous state in each request it is completely new isolated interaction. Some time stateless apps
+connect to the stateful apps to forward those requests.
+
+Deployment of stateful and stateless applications:
+
+Stateless apps are deployed using deployment which will replicate your pod (1,2 ...)
+Stateful apps are deployed using statefulset, just like deployment it will replicate the stateful apps,pods to create mltiple stateful apps.
+Both managed pods based on container Specification, configure storage with both of them equally in same way so both of them are doing same thing.
+
+What is difference b/w Deployment and statefulset:
+
+- Replicating stateful apps is more difficult it needs other requirements.
+EX:Suppose we have the mysql db and java app
+here java apps can be replicated it is pretty easy (identical and interchangable)  but to replicate mysql we need again java app for all replicas along 
+with mysql.
+Deployment can creates pods in random order with random hashes, and one service that can load balances to any pod. Even when delete it can be deleted in 
+random order by choosing or in the way how they have created.
+
+other hand mysql:
+Its more difficult to create/delete at the same time and can't be randomly addressed becoz replica pods are not identical (pod identity)
+
+Pod identity:
+- sticky identity for each pod. 
+- created from same specification, but not interchangable.
+- persistent identifier across any re-scheduling if pod dies it will be recreated but it will keeps the previous identity.
+
+Why is this identity necessary?
+Suppose there is one mysql db which will access the volume storage it can read and write, but all other mysql pods don't have write permissions becoz of 
+data inconsistancy issue still they have read only access. The pod with read,write permissions is called "Master Pod" and all others are called 
+"slave pods" or "worker pods"
+The Slaves do not use the same physical storage, they will have replicas of the storage as well so they are continuously synchronize the data
+but master only updates the data and worker must know about each change to be up-to-date for the next query request. If new pod created then it should
+have storage it will clone first and and synchronize from then. But data will be lost if all pods dies at a time when cluster crashes so persistent data 
+will be used atleast for stateful apps, data will servive even if all pods dies. Persistent volume lifecycle is not tied to other component's lifecycle.
+
+Pod state:
+Here it will contain info as this is master or slave so even if pod dies it identify the state of the pod but here remote storage using will be helpful
+than local.
+
+Pod identify:
+Every pod has its own identifier. unlike deployment: random hashes but statefulset:fixed ordered names
+$(statefulset name)-$(ordinal) --- mysql-0(master),mysql-1(slave),mysql-2(slave) etc
+Note: Next pod is only created, if previous is up and running, and if the previous is pending then it will wait to create the next pod.
+
+Delete statefulset or scale down it to one replica, deletion is in reverse order first last one is deleted. All this is in order to protect data and state
+of stateful app.
+
+2 pod endpoints:
+
+Each pod will gets it own DNS endpoint from service. 
+loadbalancer service  --- same as deployment apart from that it has individual service(DNS) name for pods
+individual service name is like ${pod.name}.${governing service domain}
+
+1) Predictable pod name --- mysql-0
+2) Fixed individual DNS name --- mysql-0.svc2
+when pod restarts: IP address changes, name and endpoint stays same
+
+sticky identity: retain state,retain role
+
+Note: Stateful apps not perfect for containerized environments but it is good for stateless apps
+
+
+K8s Services:
+What is a service and when we need it?
+Each pod has its own IP address, pods are ephemeral - destroyed frequently and creates new pod with new IP address. So, service came into picture 
+it has stable IP address and each pod is with one service and also help for load balancing, service are loose coupling, communicate easily within or 
+outside k8s cluster.
+
+1) ClusterIP Services:
+This is the default type even you forgot to give service it will take the ClusterIP service.
+Ex: microservice app deployed(running on pod - 3000 port) in cluster and a side-car container(9000 port suppose) which will collects microservice logs to db.
+and pod also gets IP address from Node's range.
+
+To see the IP address of Pod # kubectl get pod -o wide (o is o/p)
+
+Suppose we can connect to this pods from browser, first ingress will talk to the service which has an IP and port and now service will sends that request to 
+one of the pod.
+
+How the service knows to which pod and to which port request need to send?
+
+To which pods:
+
+this will select the pod with the help of "selector", 
+- pods are identifed via selectors.
+- key value pairs
+- labels of pods
+- random label names. ---> this we can specify in yaml file.
+
+If three replicas are there under the service with same label all three will be matched by service.
+- service matches all replicas
+- registers as endpoints
+- must match all the selectors 
+
+To which port:
+
+It is defined in targetPort attributes.
+
+Service endpoints:
+
+# kubectl get endpoints
+
+K8s creates endpoint objects
+- same name as service
+- keeps track of which pods are the members/endpoints of the service.
+
+Service port is arbitrary but targetPort must match the port, the container is listening at. Now the external service got the connection to the pod and now 
+need to connect to the DB mysql so pod sends request to service to get the DB pod at a particular port .
+
+Multi-Port services:
+
+- Second container running for monitoring metrics (mongo-db app,mongo-db exporter) so when you are defining multiple names define the ports for each.
+
+
+Headless Service:
+- client wants to communicate with one specific node directly.
+- Pods want to talk directly with specific pod
+- so, not randomly selected.
+- usecase: Stateful apps, like databases, pod replicas are not identical. Here direct communication needs for individual pods.
+
+- client needs to figure out IP addresses of each pod.
+But to get this option-1: API call to K8s API server
+- Makes app too tied to k8s API
+- inefficient. ---> this two are drawbacks.
+Option-2: DNS lookup 
+- DNS Lookup for service - return single IP address(cluster IP)
+- Set ClusterIP to "None" - returns Pod Ip address instead
+Note: Basically we can configure clusterIP: None for headless service. No cluster IP address is assigned.
+# kubectl get svc ---> gives list of services
+
+3 service type attributes:
+
+ClusterIP:
+---
+apiVersion: V1
+kind: Service
+metadata:
+  name: my-service
+Spec:
+  type: ClusterIP
+---
+- Default, type not needed
+- internal service
+
+
+Node port:
+---
+apiVersion: V1
+kind: Service
+metadata:
+  name: my-service
+Spec:
+  type: NodePort
+---
+- Cluster IP is accessable only inside cluster but with Node port external traffic has to access to fixed or static port on each worker node. 
+
+LoadBalancer:
+---
+apiVersion: V1
+kind: Service
+metadata:
+  name: my-service
+Spec:
+  type: LoadBalancer
+---
 
 
 #Metrics
-kubectl top The kubectl top command returns current CPU and memory usage for a cluster’s pods or nodes, or for a particular pod or node if specified.
+kubectl top - The kubectl top command returns current CPU and memory usage for a cluster’s pods or nodes, or for a particular pod or node if specified.
   
   
   
