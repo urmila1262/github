@@ -176,6 +176,15 @@ Environmental Variables:
 What variables are found in Jenkins?
 http://localhost:8080/env-vars.html/ ---> all env variables are present here.
 
+We can define our own env variables as well.
+
+----
+pipeline {
+    agent any
+    environment {
+        NEW_VRESION = '1.3.0'
+    }
+    stages {
 
 
 
