@@ -93,7 +93,125 @@ come with folder plugin.
 Folder - enables to organize build jobs in folders.
 - This credentials are not accessed by other projects only global credentials are accessed this are project specific and secure.
 
+In Dev branch create new file 
 
+Basic pipeline syntex:
+-------
+pipeline {
+    agent any
+    stages {
+        stage("build") {
+            steps {
+            }
+        }
+    }
+}
+-------
+
+Want to try something out:
+Adjust Jenkinsfile,commit,check out, rebuild.
+There is replay in jenkins for the build it will support to adjust the last runed build and rerun.
+
+----
+pipeline {
+    agent any
+    stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+            }
+        }
+                stage ("test") {
+            steps {
+                echo 'testing the application...'
+                script {
+                def test = 2 + 2 > 3 ? 'cool' : 'not cool'
+                echo test
+                }
+            }
+        }
+                stage ("deploy") {
+            steps {
+                echo 'deploying the application...'
+            }
+        }
+    }
+}
+----
+
+Note: we have one more option that can restart the build, with this we can select what ever the stage we want by skipping other stages.
+
+Trigger jenkins build automatically with Git integration: two ways to trigger.
+- Push notification : version control notifies Jenkins on new commit (more efficient) - whenever changes are there.
+- Polling for changes : Jenkins polls in regular intervals.
+
+1st option: 
+1) Install jenkins plugin based on your version control system.
+2) Configure repository server hostname.
+3) Access token or credentials.
+
+Manage jenkins----> system configuration ---> gitlab or github ---> configure to connect
+SCM --->settings---> integrations ---> webhooks URL(this need to take from jenkins, from github configuration register hooks for all jobs now you will get
+override Hook URL that is web hookurl for github - Jenkins listen here for code changes) - diff for each vcs ----> Trigger- push events.
+
+Flow will be Developer --->commits --->gitlab --->pushes changes to --->Jenkins web hooks URL --->Jenkins trigger that build
+
+2dn option: Polling 
+Jenkins job ---> configuration --->scan multibranch pipeline triggers --->periodically if not otherwise run(interval= time 1min,...) now if we do changes in 
+github the build will run within a min no need to scan manually this will be more helpful to take backups.
+
+Configure build tools in Jenkins:
+- Develop your application.
+- Jenkins should build and package that app (you need a build tool available on jenkins)
+4 main build tools -- maven,gradle(for backend Java apps), yarn,npm(for frontend Java apps) -- need any one of build tools in Jenkins to work.
+
+How to use this tools in Jenkins:
+- Some build tools are already installed.
+- The rest you need to install and configure.
+
+1) Check if tool already exist? If yes you need to configure it
+2) if not Install it from plugins and do step 1
+3) once it is configured use it in build config (i.e, Jenkinsfile)
+
+Manage Jenkins ---> Global tool configuration ---> see the list already configured --->here we can install the new builds as well.
+
+Install yarn/npm
+Manage plugins --> available --->nodeJs it will give npm as well --->install ---> restart jenkins now this plugin will reflect --->global tool config you
+will see the nodejs in the list--->configure it with version and all now yarn will work.
+
+Both gradle and yarn are available:
+Use build tools in jenkinsfile:
+------
+pipeline {
+    agent any
+    stages {
+        stage("run frontend") {
+            steps {
+                echo 'executing yarn...'
+                nodejs('name specified in Jenkins') {   --->wrapper
+                    sh 'yarn install'   ----> for linux , for windows we can use batch command.
+                }
+            }
+        }
+        stage("run backend") {
+            steps {
+                echo 'executing gradle...'
+                withGradle() {
+                    sh './gradlew -v'   --->give version
+                }
+            }
+        }
+    }
+}    
+------
+
+Alternative way to use build tools:
+
+pipeline {
+    agent any
+    tools {     ----> this works same as wrapper (3 tools it is supporting maven,gradle,jdk)
+    gradle 'Gradle-6.2'  ---> it will tell jenkins that to use Gredle and here the version is configured in Jenkins.
+    }
 
 
 
