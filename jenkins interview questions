@@ -16,6 +16,7 @@ How to configure master,slave?
 To set up slaves/nodes in Jenkins follow the steps given below.
 Step 1 − Go to the Manage Jenkins section and scroll down to the section of Manage Nodes.
 Step 2 − Click on New Node.
+
 Step 3 − Give a name for the node and click on Ok.
 Step 4 − Enter the details of the node slave machine.
 
@@ -31,4 +32,172 @@ A stage block contains a series of steps in a pipeline. That is, the build, test
 Generally, a stage block is used to visualize the Jenkins pipeline process. A step is nothing but a single task that executes a specific process at a defined time.
 
 How to integrate jenkins with github and nexus artifactory?
+
+
+
+
+
+
+
+
+
+Jenkins File:
+
+Jenkins file is a scripted pipeline and created in the repository to build the jobs.
+
+Basic pipeline syntex:
+-------
+pipeline {
+    agent any
+    stages {
+        stage("build") {
+            steps {
+            }
+        }
+    }
+}
+-------
+
+Jenkins file can be created as scripted and declarative.
+Scripted:
+1)This is the first method of syntex.
+2)Here script is written in Groovy.
+3)
+----
+node {
+   groovy script
+}
+----
+Here you can write as your wish there is no proper stracture.
+4)Advanced scripting capabilities, high flexibility but people think that it is bit difficult so recently  declarative method.
+
+Declarative:
+1) Recent addition
+2) Easier to get started, but not that powerful.
+3)Pre-defined structure
+----
+pipeline {
+    agent any
+    stages {
+        stage ("build") {
+            steps {
+            }
+        }
+    }
+}
+----
+Required fields of Jenkinsfile
+for node we use pipeline and agent any.
+pipeline ----> declare that you are writing pipeline, should be in top.
+agent any ---> where to execute, on which available jenkins agent to run.(agent may be a node,master-slave)
+stages ---> where the work happens mainly
+stage and steps ---> here you can add as many stages as shown below.
+ex:
+step 1:
+----
+pipeline {
+    agent any
+    stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+            }
+        }
+                stage ("test") {
+            steps {
+                echo 'testing the application...'
+            }
+        }
+                stage ("deploy") {
+            steps {
+                echo 'deploying the application...'
+            }
+        }
+    }
+}
+----
+step 2:
+Create new job for the above script
+name: my-app-pipeline
+Multibranch pipeline -- ok
+
+configure job 
+Branch sources
+git
+url:
+credentials:
+branch:
+
+Build configuration  --- default it has came need to check.
+mode: the Jenkinsfile
+  scriptpath: Jenkinsfile
+  
+save
+
+Now the build runs it will check all the branches available if we didn't specified branch name. The build is successful there we can see what we have written
+in stages downbox for the each stage. We can see declarative pipeline SCM there start of pipeline.
+
+Post attributes in Jenkinsfile:
+
+----
+pipeline {
+    agent any
+    stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+            }
+        }
+                stage ("test") {
+            steps {
+                echo 'testing the application...'
+            }
+        }
+                stage ("deploy") {
+            steps {
+                echo 'deploying the application...'
+            }
+        }
+    post {
+        always {
+    }
+}
+----
+post executes some logic after all the stages executed
+Conditions:
+ -- always - it will execute always even build success or fail like email
+ -- success - it will execute only build success
+ -- failure - it will execute only when build is failure
+Post block we can define expressions os Build status or Build status changes.
+
+Define expressions or conditions for each stage.
+
+Environmental Variables:
+What variables are found in Jenkins?
+http://localhost:8080/env-vars.html/ ---> all env variables are present here.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
