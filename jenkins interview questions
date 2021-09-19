@@ -39,6 +39,65 @@ How to integrate jenkins with github and nexus artifactory?
 
 
 
+Jenkins Beginner tutorial:
+- Jenkins container setup
+- Create multibranch pipeline with Git Repo
+- Types of credentials.
+- Jenkinsfile to configure multibranch pipeline.
+
+Run Jenkins in Docker container:
+From Github take afficial jenkins image
+# docker pull jenkins/jenkins
+# docker run -p 8080:8080 -p 50000:50000 -d -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+Docker run options:
+Expose port 8080 : by default runs on this port
+Expose port 50000 : Master/slave communication
+Run in detached mode : run container in backend
+Bind named volume : persist data of jenkins
+
+# docker ps
+# docker logs containerID
+
+In logs you can find the pwd for jenkins take that pwd and login form browser that will initializes the jenkins.
+create admin user ---> instance configuration(http://localhost:8080/)---> save and Finish ---> now start using jenkins.
+
+Types of Jenkins Projects
+
+Free style jobs -- simple,single tasks   ex: run tests
+Pipeline -- whole delivery flow.     ex: test|build|package|deploy your app etc this is for a single branch
+Multibrance pipeline -- here like pipeline for multiple branches of same repository.
+Note: Pipeline is most recent project before that there are chain of freestyle projects combined to get a pipeline project
+
+Create multibranch pipeline with Git
+- credentials in Jenkins
+- Filter branches by name
+
+create new job ---> multibranch pipeline--->configure--->metadata(name and description) --->Branch source(project you want to build) --->select Git
+---> project repo(clone the URL) ---> branch (select filter by name with regular expression - it will take from multiple branches)  --->build configuration
+(Build from jenkinsfile)
+
+Credentials in Jenkins:
+"Credentials" plugin to store and manage them centrally instead of creating for all app along with jenkins file.
+Credentials --->global--->global credentials --->add credentials --->global and system --->system (jenkins and nodes only - only available on jenkins server
+and system credentials are not visiable or accessible by jenkins jobs) ---> global credentials (accessible everywhere) ---> username,pwd,ID - this is 
+referance for your credentials.
+
+Credential Types:
+username and password,certificate,secret file, secret text, new types based on plugins - SSH username with private key like github token
+
+Credentials:
+- on the main page
+- on the pipeline page - this is third scope and it is limited to the project only with multibranch pipeline other job types do not have this, and it will
+come with folder plugin.
+Folder - enables to organize build jobs in folders.
+- This credentials are not accessed by other projects only global credentials are accessed this are project specific and secure.
+
+
+
+
+
+
 
 
 Jenkins File:
@@ -69,7 +128,7 @@ node {
 }
 ----
 Here you can write as your wish there is no proper stracture.
-4)Advanced scripting capabilities, high flexibility but people think that it is bit difficult so recently  declarative method.
+4)Advanced scripting capabilities, high flexibility but people think that it is bit difficult so recently  declarative method came.
 
 Declarative:
 1) Recent addition
@@ -168,7 +227,7 @@ Conditions:
  -- always - it will execute always even build success or fail like email
  -- success - it will execute only build success
  -- failure - it will execute only when build is failure
-Post block we can define expressions os Build status or Build status changes.
+Post block we can define expressions on Build status or Build status changes.
 
 Define expressions or conditions for each stage.
 
@@ -183,29 +242,154 @@ pipeline {
     agent any
     environment {
         NEW_VRESION = '1.3.0'
+        SERVER_CREDENTIALS = credentials('')   ------>it will take ID or referance of jenkins.
     }
     stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+                echo "building version ${NEW_VRESION}"   --->if double quotes are used then saying this has env variables in groovy single quote normal echo
+            }
+
+Another way is to give env vriables is using credentials in Jenkinsfile.
+1) Define credentials in Jenkins GUI
+2) "credentials("credentailId")" binds the credentials to your env variables.
+3) For that you need "credentials Binding" plugin. 
+- Jenkins--->credentials--->global --->credentials(user,pwd,ID of refer) save. this ID can be used as a ref in Jenkinsfile.
+
+credentials plugin: Allows to create plugins
+credentials Binding plugin: Allow to use credentials in Jenkinsfile through env variables. 
+
+Tools attribute for build tools:
+Access build tools like maven,gradle,yarn,ant etc for your projects.
+only 3 build tools available for Jenkinsfile: Gradle,maven and JDK.
+
+pipeline {
+    agent any
+    tools {
+        maven 'Maven'
+    }
+    stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+                sh "mvn install"
+    
 
 
+- Manage jenkins ---> global tool configuration ---> Maven (configured)
 
+Parameters in Jenkinsfile:
 
+pipeline {
+    agent any
+    parameters {
+        string(name: 'VERSION', defaultValue: '',description: 'version to deploy on prod') --->you can remove this when boolean is used.
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+    }
+    stages {
+        stage ("build") {
+            steps {
+                echo 'building the application...'
+            }
+        }
+                stage ("test") {
+                    when {
+                         expression {
+                             params.executeTests == true   ----> even without true also works fine(if it is false down step do not execute)
+                         }
+                    }
+            steps {
+                echo 'testing the application...'
+            }
+        }
+        stage ("deploy") {
+            steps {
+                echo 'deploying the ...'
+                echo "deploying version ${params.VERSION}"    -----> it must be "params.VERSION"
+            }
+        }
+            
 
+Types of parameter:
+- string(name,defaultValue,description)
+- choice (name, choices, description)
 
+Now in Jenkins we see this at build with parameters we can select version and run, we can see the specified version deploying this parameters will be for 
+all versions.
 
+Using external Groovy script:
 
+All environmental variables in Jenkinsfile are available in groovy script.
 
+Jenkinsfile:
 
+-------
+def gv
 
+pipeline {
+    agent any
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+    }
+    stages {
+        stage("init") {
+            steps {
+                script {
+                   gv = load "script.groovy" 
+                }
+            }
+        }
+        stage("build") {
+            steps {
+                script {
+                    gv.buildApp()
+                }
+            }
+        }
+        stage("test") {
+            when {
+                expression {
+                    params.executeTests
+                }
+            }
+            steps {
+                script {
+                    gv.testApp()
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
+        }
+    }   
+}
+--------
 
+Groovy script:
 
+------
+def buildApp() {
+    echo 'building the application...'
+} 
 
+def testApp() {
+    echo 'testing the application...'
+} 
 
+def deployApp() {
+    echo 'deplying the application...'
+    echo "deploying version ${params.VERSION}"
+} 
 
-
-
-
-
-
+return this
+------
 
 
 
