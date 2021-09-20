@@ -1266,9 +1266,77 @@ kubectl top - The kubectl top command returns current CPU and memory usage for a
   
   
   
+Kubernetes interview Questions:
+
+1) What is the work of a kube-scheduler?
+Kube-scheduler is the default scheduler for Kubernetes. It assigns nodes to newly created pods.
+
+2) Define daemon sets
+Daemon sets are a set of pods that runs on a host. They are used for host layers attributes like monitoring network or simple network.
+
+3) Define Kubernetes controller manager
+The controller manager is a daemon used for garbage collection, core control loops, and namespace creation. It enables the running of more than one 
+process on the master node.
+
+4) Why use namespace in Kubernetes?
+Namespaces in Kubernetes are used for dividing cluster resources between users. It helps the environment where more than one user spread projects or 
+teams and provides a scope of resources.
+
+5) Explain Kubernetes Architecture
+
+Kubernetes Architecture Diagram
+Master Node: The master node is the first and most vital component which is responsible for the management of Kubernetes cluster. It is the entry point 
+for all kinds of administrative tasks. There may be more than one master node in the cluster to check for fault tolerance.
+API Server: The API server acts as an entry point for all the REST commands used for controlling the cluster.
+Scheduler: The scheduler schedules the tasks to the slave node. It stores the resource usage information for every slave node. It is responsible 
+for distributing the workload.
+Etcd: etcd components, store configuration detail, and wright values. It communicates with the most component to receive commands and work. 
+It also manages network rules and port forwarding activity.
+Worker/Slave nodes: Worker nodes are another essential component that contains all the required services to manage the networking between the 
+containers, communicate with the master node, which allows you to assign resources to the scheduled containers.
+Kubelet: It gets the configuration of a Pod from the API server and ensures that the described containers are up and running.
+Docker Container: Docker container runs on each of the worker nodes, which runs the configured pods.
+Pods: A pod is a combination of single or multiple containers that logically run together on nodes.
+
+6) List various services available in Kubernetes
+Various services available in Kubernetes are 1) Cluster IP service, 2) Load Balancer service, 3) Node Port service, 4) External Name Creation service.
+
+7) Define Cluster IP
+The Cluster IP is a Kubernetes service that offers a service inside the cluster that other apps inside cluster can access.
+
+8) Explain node port
+The node port service is a fundamental way to get external traffic to your service. It opens a particular port on all nodes and forwards network traffic 
+sent to this port.
+
+9) Define kubelet
+The kubelet is a service agent which controls and maintains group pf pods by checking pod specification using Kubernetes. The kubelet runs on each node
+and allows to communicate between a master node and a slave node.
+
+10) What is Kube-proxy?
+Kube-proxy is an implementation of both a network proxy and a load balancer. It is used to support service abstraction used with other networking operations. 
+It is responsible for directing traffic to the container depend on IP and the port number.
+
+11) Define Stateful sets in Kubernetes
+The stateful set is a workload API object that is used to manage the stateful application. It can also be used to manage the deployments and scaling
+the sets of pods. The state information and other data of stateful pods are store in the disk storage, which connects with stateful set.
+
+12) Why use Daemon sets?
+Daemon sets are used because:
+It enables to runs storage platforms like ceph and glusterd on each node.
+Daemon sets run the logs collection on every node such as filebeat or fluentd.
+It performs node monitoring on each and every node.
+
+13) Explain Replica set
+A Replica set is used to keep replica pods stable. It enables us to specify the available number of identical pods. This can be considered a replacement
+for the replication .controller.
   
-  
- 
+ 14) What are the labels in Kubernetes?
+Labels are a collection of keys that contain some values. The key values are connected to pods, replication controllers, and associated services. 
+Generally, labels are added to some object during its creation time. They can be modified by the users at run time.
+
+15) Explain PVC
+The full form of PVC stands for Persistent Volume Claim. It is storage requested by Kubernetes for pods. The user does not require to know the 
+underlying provisioning. This claim should be created in the same namespace where the pod is created.
   
   
   
