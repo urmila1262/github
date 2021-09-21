@@ -1278,24 +1278,32 @@ Daemon sets are a set of pods that runs on a host. They are used for host layers
 The controller manager is a daemon used for garbage collection, core control loops, and namespace creation. It enables the running of more than one 
 process on the master node.
 
-4) Why use namespace in Kubernetes?
+4) What is the use of namespace in Kubernetes?
 Namespaces in Kubernetes are used for dividing cluster resources between users. It helps the environment where more than one user spread projects or 
 teams and provides a scope of resources.
 
 5) Explain Kubernetes Architecture
 
 Kubernetes Architecture Diagram
+
 Master Node: The master node is the first and most vital component which is responsible for the management of Kubernetes cluster. It is the entry point 
 for all kinds of administrative tasks. There may be more than one master node in the cluster to check for fault tolerance.
+
 API Server: The API server acts as an entry point for all the REST commands used for controlling the cluster.
+
 Scheduler: The scheduler schedules the tasks to the slave node. It stores the resource usage information for every slave node. It is responsible 
 for distributing the workload.
+
 Etcd: etcd components, store configuration detail, and wright values. It communicates with the most component to receive commands and work. 
 It also manages network rules and port forwarding activity.
+
 Worker/Slave nodes: Worker nodes are another essential component that contains all the required services to manage the networking between the 
 containers, communicate with the master node, which allows you to assign resources to the scheduled containers.
+
 Kubelet: It gets the configuration of a Pod from the API server and ensures that the described containers are up and running.
+
 Docker Container: Docker container runs on each of the worker nodes, which runs the configured pods.
+
 Pods: A pod is a combination of single or multiple containers that logically run together on nodes.
 
 6) List various services available in Kubernetes
