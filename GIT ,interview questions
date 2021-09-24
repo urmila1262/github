@@ -66,3 +66,60 @@ $ git bisect good v1.0 # mentioning it the last good working commit (without reg
 
 
 
+List of commands:
+
+Setup and config:
+git 
+congif
+help
+
+Getting and creating projects:
+init
+clone
+
+Basic snapshotting:
+add
+status
+diff
+commit
+notes 
+restore
+reset
+mv
+rm
+
+Branching and merging
+branch
+checkout
+switch
+merge
+mergetool
+log 
+stash
+tag
+
+Sharing and updating projects
+fetch 
+pull 
+push
+remote
+
+Inspection and comparison
+show 
+log
+diff
+
+Patching
+apply
+cherry-pick
+diff
+rebase
+revert
+
+Debugging
+bisect
+blame
+grep
+
+
+
