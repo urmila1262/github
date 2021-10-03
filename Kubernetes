@@ -1337,7 +1337,7 @@ It enables to runs storage platforms like ceph and glusterd on each node.
 Daemon sets run the logs collection on every node such as filebeat or fluentd.
 It performs node monitoring on each and every node.
 
-13) Explain Replica set
+13) Explain Replica set?
 A Replica set is used to keep replica pods stable. It enables us to specify the available number of identical pods. This can be considered a replacement
 for the replication .controller.
   
