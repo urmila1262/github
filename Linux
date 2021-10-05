@@ -1,10 +1,22 @@
 Linux or unix is command line os and is case sensitive.
 
+What is shell?
+Shell is a program that takes command from the keyboard and gives them to OS to perform.
+
+What is terminal?
+Terminal is a tool to pass your shell commands. ctrl+alt+t ---> command opens terminal
+
 pwd: Present working dir or current working dir.
 Gives information about the current dir where you are.
 
 ls: list
 this command gives list of files and dirs in the current working dir.
+
+Syntex: ls [options] [F/D]
+ls Downloads/: list downloads
+ls / : list root dir
+ls ~ : list home dir
+ls .. : list of parent dir
 ls -l: long list of all files and dirs.
 ls -al: long list of all files and dirs along with hidden files.
 ls -ltr:long list of all files and dirs in reverse of there modified time.
@@ -19,7 +31,8 @@ cd /path/  ---> to go to particular path.
 
 mkdir: command is used to create dirs.
 mkdir -p : to create multiple dirs at a time.
-mkdir dirname, mkdir -p dir1 dir2 ...etc, mkdir -p dir1/dir2/dir3 ...etc.
+mkdir dirname, mkdir -p dir1 dir2 ...etc, mkdir -p dir1/dir2/dir3, mkdir -p dir1/{abc,xyz,pqr}--->creates multiple sub-dirs ...etc.
+
 
 rmdir: remove empty dirs --->rmdir dirname
 rm : remove files  ---> rm filename
@@ -34,6 +47,10 @@ cat :cat command is used to create files, append data into files and display the
  cat >> filename  ---> to append data into the file.
  cat f1 f2 >> f3  ---> combines two files data into f3.
  cat f1 f2 ... ----> to display content of one or more files.
+ 
+ 
+Redirection [>] : Capturing o/p from one file and sending it as i/p to other file
+cat > test.txt
  
 touch: Touch command is used to create multiple 0 byte files at a time, also it can update creating and modification time of a file.
 touch f1 f2 f3 ... etc.
@@ -621,6 +638,8 @@ Syntax:
 $kill pid
 
 
+
+
 wget:
 chown:
 Netcat(nc):
@@ -631,8 +650,6 @@ nohup:
 whoami:
 xargs:
 chroot:
-fsck:
-dpkg:
 dmesg:
 expr:
 env:
