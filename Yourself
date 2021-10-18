@@ -9,3 +9,25 @@ push the artifact into nexus by using nexus artifact uploader plugin.
 EC2,S3,IAM,VPC,Autoscaling and ELB.
   We are using jira for project iteration and tracking purpose. We follow Agile with scrum. Usually our sprint goes for 16 days.
   
+  
+  
+  
+  
+  
+  
+  
+  My name is Urmila, I have 2.5 years of experience in DevOps and build release activities. Majorly I was involved in setting up CI/CD pipelines from scratch.
+We have used Github enterprise as version control system. I created repositories and assigned permissions to application teams. I integreated github with Jenkins 
+to fetch source code.We have used jenkins as continuous integration tool, I installed Jenkins and did master-slave configuration.Created various jenkins jobs based
+on customer requirement. I have written jenkins file to create pipeline jobs. I integrated jenkins with nexus artifactory. So, whenever pipeline job run it will
+push the artifact into nexus by using nexus artifact uploader plugin.
+
+I have basic knowledge on Docker,Kubernetes and AWS.
+
+I have 1.2 years of experience in Risk Management. We were using splunk for monitoring our apps as well as infrastructure. When ever any suspicious activity 
+happened then we will get notables in splunk, I used to investigate cause for the malware and try to get it resolved by checking with end users.
+I have good experience on investigating phishing mails, checking URLs,attachments,headers,domains etc
+
+Also I have working experience with tools like EDR(Endpoint detection and response),ATP(Advanced Threat Protection) and ticketing tools like Global call center
+(GCC),BMC. 
+  
