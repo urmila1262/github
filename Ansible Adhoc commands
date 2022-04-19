@@ -1,7 +1,7 @@
 What is the use of Adhoc commmands?
 
-For small,easy and quick tasks we use adhoc commands instead of writing play blooks.Ex: to restart,to power off all servers at a time,to get uptime of all servers,to getting curl
-versions, os versions etc we can use Adhoc commands.
+For small,easy and quick tasks we use adhoc commands instead of writing play books.Ex: to restart,to power off all servers at a time,to get uptime of all 
+servers,to getting curl versions, os versions etc we can use Adhoc commands.
 
 What is diff b/w Adhoc commands and playbooks?
 
